@@ -1,158 +1,38 @@
-app.component('outletList', {
-    templateUrl: outlet_list_template_url,
+app.component('coaTypeList', {
+    templateUrl: coa_type_list_template_url,
     controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $element) {
-        $http.get(
-            get_outlet_filter_url
-        ).then(function(response) {
-
-
-            self.country_list = response.data.country_list;
-
-
-        });
-        $scope.loading = true;
         var self = this;
         self.hasPermission = HelperService.hasPermission;
-        var dataTable = $('#outlet-table').DataTable({
-            "dom": dom_structure_2,
+        
+        var dataTable = $('#example-datatable').dataTable({
+            "dom": cndn_dom_structure,
             "language": {
                 "search": "",
                 "searchPlaceholder": "Search",
-                "lengthMenu": "Rows Per Page _MENU_",
+                "lengthMenu": "Rows _MENU_",
                 "paginate": {
                     "next": '<i class="icon ion-ios-arrow-forward"></i>',
                     "previous": '<i class="icon ion-ios-arrow-back"></i>'
                 },
             },
-            pageLength: 10,
             processing: true,
-            serverSide: true,
             paging: true,
-            ordering: false,
-            ajax: {
-                url: laravel_routes['getlistOutlets'],
-                type: "GET",
-                dataType: "json",
-                data: function(d) {
-                    // alert();
-                    d.outlet_code = $('.outlet_code').val();
-                    d.outlet_name = $('.outlet_name').val();
-                    d.country_id = $('.country_id').val();
-                    d.state_id = $('.state_id').val();
-                    d.region_id = $('.region_id').val();
-                },
-            },
-
-            columns: [
-
-                { data: 'action', class: 'action', name: 'action', searchable: false },
-                { data: 'outlet_code', name: 'outlets.code' },
-                { data: 'outlet_name', name: 'outlets.name' },
-                { data: 'region_name' },
-                { data: 'state_name', name: 'st.name' },
-                { data: 'country_name', name: 'countries.name' },
-                { data: 'status', searchable: false },
-            ],
-            "infoCallback": function(settings, start, end, max, total, pre) {
-                $('#table_info').html('(' + max + ')')
-            },
-            rowCallback: function(row, data) {
-                $(row).addClass('highlight-row');
-            }
         });
-        $('.dataTables_length select').select2();
-
-        $('.title-block').html('<h1 class="title">Outlets<span class="badge badge-secondary" id="table_info">0</span></h1>' +
-            '<p class="subtitle">Masters / Outlets</p>'
-        );
-        $('li').removeClass('active');
-        $('.master_link').addClass('active').trigger('click');
-        $('.page-header-content-left .button-block').html(
-            '<button class="btn btn-bordered" data-toggle="modal" data-target="#filter">' +
-            '<i class="icon ion-md-funnel"></i>Filter' +
-            '</button>'
-        );
-
-        $('.page-header-content-right .button-block').html(
-            '<a href="#!/master/outlets/add" type="button" class="btn btn-primary">' +
-            'Add New' + '</a>'
-        );
-
-
-        var dataTable = $('#outlet-table').dataTable();
-
-        $scope.get_outlet_code = function(query) {
-            dataTable.fnFilter();
-        }
-
-        $scope.get_outlet_name = function(query) {
-            dataTable.fnFilter();
-        }
-        $scope.onSelectedCountry = function(country_id_selected) {
-            $('.country_id').val(country_id_selected);
-            dataTable.fnFilter();
-        }
-
-        $scope.onSelectedState = function(state_id_selected) {
-            $('.state_id').val(state_id_selected);
-            dataTable.fnFilter();
-        }
-
-        $scope.onSelectedRegion = function(region_id_selected) {
-            $('.region_id').val(region_id_selected);
-            dataTable.fnFilter();
-        }
-
-        $scope.get_country_base_state = function(id) {
-
-            // alert(id);
-            $http.get(
-                outlet_get_state_filter_list + '/' + id
-            ).then(function(response) {
-                self.state_list = response.data.state_list;
-
+        $("#search_box").keyup(function() {
+            dataTable.fnFilter(this.value);
+        }); 
+        setTimeout(function() {
+            $('.show-as').select2();
+            $('.modal-select').select2();
+            $('.multi-select').multiselect({
+                enableClickableOptGroups: true,
+                enableCollapsibleOptGroups: true,
+                enableFiltering: true,
+                enableCaseInsensitiveFiltering: true,
+                includeSelectAllOption: true
             });
-        }
-
-        $scope.get_state_base_region = function(id) {
-
-            // alert("state"+id);
-            $http.get(
-                outlet_get_region_filter_list + '/' + id
-            ).then(function(response) {
-                // console.log(response.data.region_filter_list);
-                self.region_filter_list = response.data.region_filter_list;
-
-            });
-        }
-
-        $scope.calldeleteConfirm = function($id) {
-            // alert($id);
-            $('#delete_id').val($id);
-        }
-        $scope.deleteConfirm = function() {
-
-
-            $id = $('#delete_id').val();
-            $http.get(
-                delete_outlet_url + '/' + $id,
-            ).then(function(response) {
-                if (response.data.success) {
-
-                    new Noty({
-                        type: 'success',
-                        layout: 'topRight',
-                        text: 'Outlet Deleted Successfully',
-                    }).show();
-
-                    $('.outlet_list').DataTable().ajax.reload(function(json) {});
-                    $location.path('master/outlets');
-
-                }
-            });
-        }
-
-        $rootScope.loading = false;
+            $('.dataTables_length select').select2();
+        }, 300);
 
     }
 });
