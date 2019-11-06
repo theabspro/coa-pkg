@@ -1,5 +1,5 @@
 {
-    "name": "abs/tax-pkg",
+    "name": "abs/coa-pkg",
     "description": "For COA Type, COA Posting Type and COA Code Masters",
     "type": "library",
     "require":
@@ -17,7 +17,7 @@
         "laravel":
         {
             "providers": [
-                "Abs\\TaxPkg\\CoaPkgServiceProvider"
+                "Abs\\CoaPkg\\CoaPkgServiceProvider"
             ]
         }
     },
@@ -25,7 +25,7 @@
     {
         "psr-4":
         {
-            "Abs\\Tax\\": "src/"
+            "Abs\\CoaPkg\\": "src/"
         }
     }
 }
