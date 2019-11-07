@@ -3,7 +3,9 @@
 Route::group(['namespace' => 'Abs\CoaPkg', 'middleware' => ['web', 'auth'], 'prefix' => 'coa-pkg'], function () {
 	//COA TYPE
 	Route::get('/coa-types/get-list', 'CoaTypeController@getCoaTypeList')->name('getCoaTypeList');
-	Route::get('/coa-type/save', 'CoaTypeController@saveCoaType')->name('saveCoaType');
+	Route::post('/coa-type/save', 'CoaTypeController@saveCoaType')->name('saveCoaType');
+	Route::get('/coa-type/get-form-data/{id?}', 'CoaTypeController@getCoaTypeFormdata')->name('getCoaTypeFormdata');
+	Route::get('coa-type/delete/{id?}', 'CoaTypeController@deleteCoaType')->name('deleteCoaType');
 
 	//COA POSTING TYPE
 	Route::get('/coa-posting-types/get-list', 'CoaPostingTypeController@getCoaPostingTypeList')->name('getCoaPostingTypeList');

@@ -13,7 +13,7 @@ app.config(['$routeProvider', function($routeProvider) {
     when('/coa-pkg/coa-code/edit/:id', {
         template: '<coa-code-form></coa-code-form>',
         title: 'Edit COA Code',
-    })
+    }).
 
     //COA TYPE
     when('/coa-pkg/coa-type/list', {
@@ -27,7 +27,7 @@ app.config(['$routeProvider', function($routeProvider) {
     when('/coa-pkg/coa-type/edit/:id', {
         template: '<coa-type-form></coa-type-form>',
         title: 'Edit COA Type',
-    });
+    }).
 
     //COA POSTING TYPE
     when('/coa-pkg/coa-posting-type/list', {
