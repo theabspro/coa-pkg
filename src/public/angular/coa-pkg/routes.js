@@ -32,7 +32,7 @@ app.config(['$routeProvider', function($routeProvider) {
     //COA POSTING TYPE
     when('/coa-pkg/coa-posting-type/list', {
         template: '<coa-posting-type-list></coa-posting-type-list>',
-        title: 'COA Types',
+        title: 'COA Posting Types',
     }).
     when('/coa-pkg/coa-posting-type/add', {
         template: '<coa-posting-type-form></coa-posting-type-form>',
