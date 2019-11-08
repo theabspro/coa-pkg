@@ -39,18 +39,24 @@
             </tr>
         </thead>
         <tbody>
-            <!-- <tr>
-                <td class="action">
-                    <a href="#!" class="">
-                        <img class="img-responsive" src="./public/theme/img/table/cndn/edit.svg" alt="Edit" />
-                    </a>
-                    <a href="#!" class="">
-                        <img class="img-responsive" src="./public/theme/img/table/cndn/delete.svg" alt="Delete" />
-                    </a>
-                </td>
-                <td><span class="status-indicator green"></span>Sales</td>
-                <td>2</td>
-            </tr> -->
         </tbody>
     </table>
 </div><!-- Content Wrap -->
+
+<!-- Modal -->
+<div class="modal fade alert-modal failure" id="coa-type-delete-modal" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">ARE YOU SURE?</h4>   
+            </div>
+            <div class="modal-body">
+                <h5>Delete</h5>
+                <p>You can’t retrive the data again, Are you sure you want to delete? </p>
+                <input type="hidden" name="coa_type_id" id="coa_type_id" value="">
+                <button class="btn btn-grey" data-dismiss="modal" aria-label="Close">Cancel</button>
+                <button class="btn btn-rose" id="delete_coa_type_confirm_modal" ng-click="deleteCoaTypeConfirm()" type="button" data-dismiss="modal" aria-label="Close">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -17,14 +17,22 @@ class CoaTypeController extends Controller {
 	public function getCoaTypeList() {
 		$coa_type_list = CoaType::withTrashed()
 			->select(
-				'coa_types.*',
-				DB::raw('IF(coa_types.deleted_at IS NULL, "ACTIVE", "INACTIVE") as status')
+				'coa_types.*'
+				//DB::raw('IF(coa_types.deleted_at IS NULL, "ACTIVE", "INACTIVE") as status')
 			)
 			->where('coa_types.company_id', Auth::user()->company_id)
 			->groupBy('coa_types.id')
 			->orderBy('coa_types.id', 'Desc');
 
 		return Datatables::of($coa_type_list)
+			->addColumn('status', function ($coa_type_list) {
+				if ($coa_type_list->deleted_at == NULL) {
+					$status = "<td><span class='status-indicator green'></span>ACTIVE</td>";
+				} else {
+					$status = "<td><span class='status-indicator red'></span>INACTIVE</td>";
+				}
+				return $status;
+			})
 			->addColumn('action', function ($coa_type_list) {
 
 				$img_edit = asset('public/theme/img/table/cndn/edit.svg');
@@ -33,7 +41,7 @@ class CoaTypeController extends Controller {
 				return '<a href="#!/coa-pkg/coa-type/edit/' . $coa_type_list->id . '" class="">
                         <img class="img-responsive" src="' . $img_edit . '" alt="Edit" />
                     	</a>
-						<a href="javascript:;"  data-toggle="modal" data-target="#coa-type-delete-modal" onclick="angular.element(this).scope().deleteCoaTypeConfirm(' . $coa_type_list->id . ')" title="Delete"><img src="' . $img_delete . '" alt="Delete" class="img-responsive delete"></a>';
+						<a href="javascript:;"  data-toggle="modal" data-target="#coa-type-delete-modal" onclick="angular.element(this).scope().calldeleteConfirm(' . $coa_type_list->id . ')" title="Delete"><img src="' . $img_delete . '" alt="Delete" class="img-responsive delete"></a>';
 			})
 			->make(true);
 	}
@@ -55,7 +63,7 @@ class CoaTypeController extends Controller {
 	}
 
 	public function saveCoaType(Request $request) {
-
+		//dd($request->all());
 		DB::beginTransaction();
 		try {
 

@@ -24,12 +24,11 @@
                     <div class="tab-form-header">
                         <div class="tab-header">
                                 <!-- Filters -->
-                            <!-- <div class="isotope-filters animated" data-animation="fadeInLeft" data-animation-delay="300">
+                            <div class="isotope-filters animated" data-animation="fadeInLeft" data-animation-delay="300">
                                 <ul class="nav nav-pills cndn-tabs">
-                                    <li class="active"><a class="filter active" data-target="#category-information" data-toggle="tab" aria-expanded="true">Category</a></li>
-                                    <li><a data-target="#sub-category-information" data-toggle="tab" aria-expanded="true" class="filter">Sub Categories</a></li>
+                                    <li class="active"><a class="filter active" data-target="#category-information" data-toggle="tab" aria-expanded="true">COA Type</a></li>
                                 </ul>
-                            </div> --> 
+                            </div> 
                         </div><!-- Tab Header -->
                     </div><!-- Tab Form Header -->
                     <div class="tab-form-body">
@@ -41,7 +40,7 @@
                                         <div class="col-md-3">
                                             <div class="input-text form-group">
                                                 <label>Name<sup class="mandatory">*</sup></label>
-                                                <input type="text" name="name" ng-model="$ctrl.coa_type.name" class="form-control" placeholder="Enter Name" autocomplete="off" />
+                                                <input type="text" name="name" ng-model="$ctrl.coa_type.name" class="form-control" placeholder="Enter Name" autocomplete="off" minlength="3" maxlength="191"/>
                                             </div><!-- Feild -->
                                         </div><!-- Column -->
                                         <div class="col-md-3">
@@ -55,7 +54,13 @@
                                                 </div>
                                             </div><!-- Form Group -->
                                         </div><!-- Column -->
-
+                                        <div class="tab-pane-footer">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <button type="submit" id="submit" class="btn btn-primary">Submit</button>
+                                                </div>
+                                            </div>
+                                        </div><!-- Tab Footer -->
                                     </div><!-- Row -->
                                 </div><!-- Tab Pane Wrap -->
                             </div><!-- Tabe Pane -->

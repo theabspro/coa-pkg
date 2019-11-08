@@ -7,8 +7,8 @@ app.component('coaTypeList', {
         var dataTable = $('#coa-type-table').dataTable({
             "dom": cndn_dom_structure,
             "language": {
-                //"search": "",
-                //"searchPlaceholder": "Search",
+                // "search": "",
+                // "searchPlaceholder": "Search",
                 "lengthMenu": "Rows _MENU_",
                 "paginate": {
                     "next": '<i class="icon ion-ios-arrow-forward"></i>',
@@ -44,16 +44,35 @@ app.component('coaTypeList', {
             },
         });
         $('.dataTables_length select').select2();
-        $("#search_coa_type").keyup(function() {
+        $("#search_coa_type").keyup(function() { //alert(this.value);
             dataTable.fnFilter(this.value);
         });
-
-        // $scope.search_clear = function() {
-        //     $('#coa-type-table').DataTable().search('').draw();
-        // }
+        
         $(".search_clear").on("click", function() {
+            $('#search_coa_type').val('');
             $('#coa-type-table').DataTable().search('').draw();
         });
+
+        $scope.calldeleteConfirm = function(id) {
+            $('#coa_type_id').val(id);
+        }
+        $scope.deleteCoaTypeConfirm = function() {
+            var id = $('#coa_type_id').val();
+            $http.get(
+                coa_type_delete_url + '/' + id,
+            ).then(function(response) {
+                if (response.data.success) {
+                    new Noty({
+                        type: 'success',
+                        layout: 'topRight',
+                        text: 'Coa Type Deleted Successfully',
+                    }).show();
+
+                    $('#coa-type-table').DataTable().ajax.reload();
+                    $scope.$apply();
+                }
+            });
+        }
     }
 });
 
@@ -122,14 +141,16 @@ app.component('coaTypeForm', {
                                 layout: 'topRight',
                                 text: errors
                             }).show();
+                            // custom_noty('error', errors);
                             $('#submit').button('reset');
 
                         } else {
                             new Noty({
                                 type: 'success',
                                 layout: 'topRight',
-                                text: 'Coa Type Saved Successfully',
+                                text: 'Coa Type ' + res.comes_from + ' Successfully',
                             }).show();
+                            // custom_noty('success', 'Coa Type ' + res.comes_from + ' Successfully');
                             $('#submit').button('reset');
 
                             $location.path('/coa-pkg/coa-type/list')
@@ -143,6 +164,7 @@ app.component('coaTypeForm', {
                             layout: 'topRight',
                             text: 'Something went wrong at server',
                         }).show();
+                        // custom_noty('error', 'Something went wrong at server');
                     });
             },
         });
