@@ -25,7 +25,8 @@
     {
         "psr-4":
         {
-            "Abs\\CoaPkg\\": "src/"
+            "Abs\\CoaPkg\\": "src/",
+            "Abs\\CoaPkg\\Database\\Seeds\\": "database/seeds/"
         }
     }
 }
