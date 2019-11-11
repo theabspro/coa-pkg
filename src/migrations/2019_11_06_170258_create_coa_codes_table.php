@@ -36,7 +36,6 @@ class CreateCoaCodesTable extends Migration {
 			$table->foreign('deleted_by_id')->references('id')->on('users')->onDelete('SET NULL')->onUpdate('cascade');
 
 			$table->unique(["company_id", "code"]);
-			$table->unique(["company_id", "name"]);
 		});
 	}
 
