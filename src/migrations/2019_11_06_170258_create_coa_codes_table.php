@@ -16,9 +16,9 @@ class CreateCoaCodesTable extends Migration {
 			$table->unsignedInteger('company_id');
 			$table->string('code', 191);
 			$table->string('name', 191);
-			$table->unsignedInteger('currency_code_id');
+			$table->unsignedInteger('currency_code_id')->nullable();
 			$table->unsignedInteger('type_id');
-			$table->unsignedInteger('debit_credit_proposal_id');
+			$table->unsignedInteger('debit_credit_proposal_id')->nullable();
 			$table->unsignedInteger('posting_type_id');
 			$table->unsignedInteger('created_by_id')->nullable();
 			$table->unsignedInteger('updated_by_id')->nullable();
