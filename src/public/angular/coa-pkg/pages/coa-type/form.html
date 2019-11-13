@@ -102,7 +102,7 @@
                                                                         <md-option ng-value="i.id" ng-repeat="i in $ctrl.extras.currency_code_list | filter:searchCurrencyCode">{{i.name}}</md-option>
                                                                     </md-optgroup>
                                                                 </md-select>
-                                                                <input type="hidden" name="coa_codes[{{index}}][currency_code_id]" value="{{coa_code.currency_code_id}}" class="required"> 
+                                                                <input type="hidden" name="coa_codes[{{index}}][currency_code_id]" value="{{coa_code.currency_code_id}}"> 
                                                             </td>
                                                             <td>
                                                                <md-select class="type-sm" ng-model="coa_code.debit_credit_proposal_id" placeholder="Select any one" md-on-close="clearSearchDebitCardProposal()" data-md-container-class="selectdemoSelectHeader">
@@ -113,7 +113,7 @@
                                                                         <md-option ng-value="i.id" ng-repeat="i in $ctrl.extras.debit_card_proposal_list | filter:searchDebitCardProposal">{{i.name}}</md-option>
                                                                     </md-optgroup>
                                                                 </md-select>
-                                                                <input type="hidden" name="coa_codes[{{index}}][debit_credit_proposal_id]" value="{{coa_code.debit_credit_proposal_id}}" class="required"> 
+                                                                <input type="hidden" name="coa_codes[{{index}}][debit_credit_proposal_id]" value="{{coa_code.debit_credit_proposal_id}}"> 
                                                             </td>
                                                             <td>
                                                                <md-select class="type-sm" ng-model="coa_code.posting_type_id" placeholder="Select any one" md-on-close="clearSearchPostingType()" data-md-container-class="selectdemoSelectHeader">
@@ -127,7 +127,7 @@
                                                                 <input type="hidden" name="coa_codes[{{index}}][posting_type_id]" value="{{coa_code.posting_type_id}}" class="required"> 
                                                             </td>
                                                             <td>
-                                                                <button ng-click="$ctrl.removeCoaCode(index, coa_code.id)" type="button">
+                                                                <button class="btn-delete" ng-click="$ctrl.removeCoaCode(index, coa_code.id)" type="button">
                                                                     <img class="img-responsive" src="./public/theme/img/table/cndn/delete.svg" alt="Delete" />
                                                                 </button>
                                                             </td>
