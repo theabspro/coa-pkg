@@ -18,7 +18,7 @@
     <!-- Page Main Content -->
     <div class="page-main-content form-content type2" style="padding: 0;">
         <form id="form" enctype="multipart-formdata" autocomplete="off">
-            <input type="hidden" name="id" ng-modal="$ctrl.coa_posting_type.id" value="{{$ctrl.coa_posting_type.id}}">
+            <!-- <input type="hidden" name="id" ng-modal="$ctrl.coa_posting_type.id" value="{{$ctrl.coa_posting_type.id}}"> -->
             <div class="page-tab-form pb-70">
                 <div class="tab-form-wrap">
                     <div class="tab-form-header">
@@ -37,22 +37,45 @@
                             <div class="tab-pane fade in active" id="category-information" data-animation="fadeInUp" data-animation-delay="300">
                                 <div class="tab-pane-wrap">
                                     <div class="row">
-                                        <div class="col-md-3">
-                                            <div class="input-text form-group">
-                                                <label>Name<sup class="mandatory">*</sup></label>
-                                                <input type="text" name="name" ng-model="$ctrl.coa_posting_type.name" class="form-control" placeholder="Enter Name" autocomplete="off" minlength="3" maxlength="191"/>
-                                            </div><!-- Feild -->
-                                        </div><!-- Column -->
-                                        <div class="col-md-3">
-                                            <div class="input-text form-group">
-                                                <label>Status<sup class="mandatory">*</sup></label>
-                                                <div class="tab-switch">
-                                                    <md-switch ng-model="$ctrl.switch_value" aria-label="Switch 1" ng-true-value="'Inactive'" ng-false-value="'Active'" class="md-warn">
-                                                        {{ $ctrl.switch_value }}
-                                                    </md-switch>
-                                                    <input type="hidden" name="status" value="{{$ctrl.switch_value}}">
-                                                </div>
-                                            </div><!-- Form Group -->
+                                        <div class="table-responsive">
+                                                <table class="table table-form">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>COA Posting Type</th>
+                                                            <th>Active Status</th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="coa_posting_type_list" ng-repeat="(index, coa_posting_type) in $ctrl.coa_posting_types">
+                                                        <input type="hidden" name="coa_posting_types[{{index}}][id]" value="{{coa_posting_type.id}}">
+                                                        <tr>
+                                                            <td>
+                                                                <input type="text" name="coa_posting_types[{{index}}][name]" ng-model="coa_posting_type.name" class="form-control coa_posting_type_name" placeholder="Enter Name" autocomplete="off" minlength="3" maxlength="191" required="required"/>
+                                                            </td>
+                                                            <td>
+                                                                <div class="tab-switch">
+                                                                    <md-switch ng-model="coa_posting_type.switch_value" aria-label="Switch 1" ng-true-value="'Inactive'" ng-false-value="'Active'" class="md-warn">
+                                                                        {{ coa_posting_type.switch_value }}
+                                                                    </md-switch>
+                                                                    <input type="hidden" name="coa_posting_types[{{index}}][status]" value="{{coa_posting_type.switch_value}}">
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <button ng-click="$ctrl.removeCoaPostingType(index, coa_posting_type.id)" type="button">
+                                                                    <img class="img-responsive" src="./public/theme/img/table/cndn/delete.svg" alt="Delete" />
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <td colspan="3">
+                                                                <button type="button" class="btn btn-primary-light btn-square" ng-click="$ctrl.addNewCoaPostingType()">+ Add COA Posting Type</button>
+                                                            </td>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div><!-- Table Responsive -->
                                         </div><!-- Column -->
                                         <div class="tab-pane-footer">
                                             <div class="row">
@@ -61,6 +84,7 @@
                                                 </div>
                                             </div>
                                         </div><!-- Tab Footer -->
+                                        <input type="hidden" name="coa_posting_type_removal_ids" id="coa_posting_type_removal_ids" value="">
                                     </div><!-- Row -->
                                 </div><!-- Tab Pane Wrap -->
                             </div><!-- Tabe Pane -->

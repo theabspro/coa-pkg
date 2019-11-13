@@ -17,6 +17,10 @@ class CoaType extends Model {
 		'deleted_by_id',
 	];
 
+	public function coaCodes() {
+		return $this->hasMany('Abs\CoaPkg\CoaCode', 'type_id', 'id');
+	}
+
 	public static function createFromObject($record_data) {
 
 		$errors = [];

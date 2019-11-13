@@ -27,6 +27,7 @@
                             <div class="isotope-filters animated" data-animation="fadeInLeft" data-animation-delay="300">
                                 <ul class="nav nav-pills cndn-tabs">
                                     <li class="active"><a class="filter active" data-target="#category-information" data-toggle="tab" aria-expanded="true">COA Type</a></li>
+                                    <li><a data-target="#sub-category-information" data-toggle="tab" aria-expanded="true" class="filter">COA Codes</a></li>
                                 </ul>
                             </div> 
                         </div><!-- Tab Header -->
@@ -57,10 +58,100 @@
                                         <div class="tab-pane-footer">
                                             <div class="row">
                                                 <div class="col-md-12">
+                                                    <a class="btn btn-primary btn-nxt">Next</a>
+                                                </div>
+                                            </div>
+                                        </div><!-- Tab Footer -->
+                                    </div><!-- Row -->
+                                </div><!-- Tab Pane Wrap -->
+                            </div><!-- Tabe Pane -->
+
+                            <div class="tab-pane fade" id="sub-category-information" data-animation="fadeInUp" data-animation-delay="300">
+                                <div class="tab-pane-wrap">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <h6 class="tab-pane-title">COA Type : <span class="color-primary-light">{{$ctrl.coa_type.name}}</span></h6>
+                                            <div class="table-responsive">
+                                                <table class="table table-form">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>COA Code</th>
+                                                            <th>Description</th>
+                                                            <th>Currency Code</th>
+                                                            <th>Debit Card proposal</th>
+                                                            <th>Posting type</th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="coa_codes_list" ng-repeat="(index, coa_code) in $ctrl.coa_type.coa_codes">
+                                                        <input type="hidden" name="coa_codes[{{index}}][id]" value="{{coa_code.id}}">
+                                                        <input type="hidden" name="coa_codes[{{index}}][type_id]" value="{{$ctrl.coa_type.id}}">
+                                                        <tr>
+                                                            <td>
+                                                                <input type="text" class="form-control type-sm coa_code_valid" name="coa_codes[{{index}}][code]" ng-model="coa_code.code" placeholder="Enter COA Code" autocomplete="off" minlength="3" maxlength="191" required="required"/>
+                                                            </td>
+                                                            <td>
+                                                               <input type="text" class="form-control type-sm coa_code_name" name="coa_codes[{{index}}][name]" ng-model="coa_code.name" placeholder="Enter Description" autocomplete="off" minlength="3" maxlength="191" required="required"/> 
+                                                            </td>
+                                                            <td>
+                                                                <md-select class="type-sm" ng-model="coa_code.currency_code_id" placeholder="Select any one" md-on-close="clearSearchCurrencyCode()" data-md-container-class="selectdemoSelectHeader">
+                                                                    <md-select-header class="demo-select-header">
+                                                                        <input ng-model="searchCurrencyCode" type="search" placeholder="Search for a Currency Code.." class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
+                                                                    </md-select-header>
+                                                                    <md-optgroup>
+                                                                        <md-option ng-value="i.id" ng-repeat="i in $ctrl.extras.currency_code_list | filter:searchCurrencyCode">{{i.name}}</md-option>
+                                                                    </md-optgroup>
+                                                                </md-select>
+                                                                <input type="hidden" name="coa_codes[{{index}}][currency_code_id]" value="{{coa_code.currency_code_id}}" class="required"> 
+                                                            </td>
+                                                            <td>
+                                                               <md-select class="type-sm" ng-model="coa_code.debit_credit_proposal_id" placeholder="Select any one" md-on-close="clearSearchDebitCardProposal()" data-md-container-class="selectdemoSelectHeader">
+                                                                    <md-select-header class="demo-select-header">
+                                                                        <input ng-model="searchDebitCardProposal" type="search" placeholder="Search for a Debit Card Proposal.." class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
+                                                                    </md-select-header>
+                                                                    <md-optgroup>
+                                                                        <md-option ng-value="i.id" ng-repeat="i in $ctrl.extras.debit_card_proposal_list | filter:searchDebitCardProposal">{{i.name}}</md-option>
+                                                                    </md-optgroup>
+                                                                </md-select>
+                                                                <input type="hidden" name="coa_codes[{{index}}][debit_credit_proposal_id]" value="{{coa_code.debit_credit_proposal_id}}" class="required"> 
+                                                            </td>
+                                                            <td>
+                                                               <md-select class="type-sm" ng-model="coa_code.posting_type_id" placeholder="Select any one" md-on-close="clearSearchPostingType()" data-md-container-class="selectdemoSelectHeader">
+                                                                    <md-select-header class="demo-select-header">
+                                                                        <input ng-model="searchPostingType" type="search" placeholder="Search for a Posting type.." class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
+                                                                    </md-select-header>
+                                                                    <md-optgroup>
+                                                                        <md-option ng-value="i.id" ng-repeat="i in $ctrl.extras.posting_type_list | filter:searchPostingType">{{i.name}}</md-option>
+                                                                    </md-optgroup>
+                                                                </md-select>
+                                                                <input type="hidden" name="coa_codes[{{index}}][posting_type_id]" value="{{coa_code.posting_type_id}}" class="required"> 
+                                                            </td>
+                                                            <td>
+                                                                <button ng-click="$ctrl.removeCoaCode(index, coa_code.id)" type="button">
+                                                                    <img class="img-responsive" src="./public/theme/img/table/cndn/delete.svg" alt="Delete" />
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <td colspan="3">
+                                                                <button type="button" class="btn btn-primary-light btn-square" ng-click="$ctrl.addNewCoaCode()">+ Add COA Code</button>
+                                                            </td>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div><!-- Table Responsive -->
+                                        </div><!-- Column -->
+                                        <div class="tab-pane-footer">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <a class="btn btn-secondary btn-prev">Previous</a>
                                                     <button type="submit" id="submit" class="btn btn-primary">Submit</button>
                                                 </div>
                                             </div>
                                         </div><!-- Tab Footer -->
+                                        <input type="hidden" name="coa_code_removal_ids" id="coa_code_removal_ids" value="">
                                     </div><!-- Row -->
                                 </div><!-- Tab Pane Wrap -->
                             </div><!-- Tabe Pane -->

@@ -25,13 +25,13 @@ class CoaPostingTypeController extends Controller {
 			->orderBy('coa_posting_types.id', 'Desc');
 
 		return Datatables::of($coa_posting_type_list)
-			->addColumn('status', function ($coa_posting_type_list) {
+			->addColumn('name', function ($coa_posting_type_list) {
 				if ($coa_posting_type_list->deleted_at == NULL) {
-					$status = "<td><span class='status-indicator green'></span>ACTIVE</td>";
+					$name = "<td><span class='status-indicator green'></span>" . $coa_posting_type_list->name . "</td>";
 				} else {
-					$status = "<td><span class='status-indicator red'></span>INACTIVE</td>";
+					$name = "<td><span class='status-indicator red'></span>" . $coa_posting_type_list->name . "</td>";
 				}
-				return $status;
+				return $name;
 			})
 			->addColumn('action', function ($coa_posting_type_list) {
 
@@ -49,57 +49,81 @@ class CoaPostingTypeController extends Controller {
 	public function getCoaPostingTypeFormdata($id = NULL) {
 
 		if ($id == NULL) {
-			$coa_posting_type = new CoaPostingType;
+			$coa_posting_types = [];
 			$this->data['title'] = 'Add Coa Posting Type';
 			$this->data['action'] = 'Add';
 		} else {
 			$this->data['title'] = 'Edit Coa Posting Type';
 			$this->data['action'] = 'Edit';
-			$coa_posting_type = CoaPostingType::withTrashed()->where('id', $id)->first();
+			$coa_posting_types = CoaPostingType::withTrashed()->where('id', $id)->get();
 		}
-		$this->data['coa_posting_type'] = $coa_posting_type;
+		$this->data['coa_posting_types'] = $coa_posting_types;
 
 		return response()->json($this->data);
 	}
 
 	public function saveCoaPostingType(Request $request) {
 		//dd($request->all());
-		DB::beginTransaction();
 		try {
+			if (isset($request->coa_posting_types) && !empty($request->coa_posting_types)) {
+				$error_messages = [
+					'name.required' => 'COA Posting Type name is required',
+					'name.unique' => 'COA Posting Type name is already taken',
+				];
 
-			$validator = Validator::make($request->all(), [
-				'name' => [
-					'unique:coa_posting_types,name,' . $request->id . ',id,company_id,' . Auth::user()->company_id,
-					'required:true',
-				],
-			]);
+				foreach ($request->coa_posting_types as $coa_posting_type) {
+					$validator = Validator::make($coa_posting_type, [
+						'name' => [
+							'unique:coa_posting_types,name,' . $coa_posting_type['id'] . ',id,company_id,' . Auth::user()->company_id,
+							'required:true',
+						],
+					], $error_messages);
 
-			if ($validator->fails()) {
-				return response()->json(['success' => false, 'errors' => $validator->errors()->all()]);
-			}
+					if ($validator->fails()) {
+						return response()->json(['success' => false, 'errors' => $validator->errors()->all()]);
+					}
+				}
+				//}
 
-			if (empty($request->id)) {
-				$coa_posting_type = new CoaPostingType;
-				$msg = "Saved";
-				$coa_posting_type->created_by_id = Auth()->user()->id;
+				//DELETE COA-CODES
+				DB::beginTransaction();
+				if (!empty($request->coa_posting_type_removal_ids)) {
+					$coa_posting_type_removal_ids = json_decode($request->coa_posting_type_removal_ids, true);
+					$coa_posting_type_delete = CoaPostingType::withTrashed()->whereIn('id', $coa_posting_type_removal_ids)->forcedelete();
+				}
+
+				//if (isset($request->coa_posting_types) && !empty($request->coa_posting_types)) {
+				foreach ($request->coa_posting_types as $key => $coa_posting_type) {
+					$coa_posting_type_save = CoaPostingType::withTrashed()->firstOrNew(['id' => $coa_posting_type['id']]);
+					$coa_posting_type_save->company_id = Auth::user()->company_id;
+					$coa_posting_type_save->fill($coa_posting_type);
+					if ($coa_posting_type['status'] == 'Active') {
+						$coa_posting_type_save->deleted_at = NULL;
+					} else {
+						$coa_posting_type_save->deleted_at = date('Y-m-d H:i:s');
+						$coa_posting_type_save->deleted_by_id = Auth::user()->id;
+					}
+					if (empty($coa_posting_type['id'])) {
+						$msg = "Saved";
+						$coa_posting_type_save->created_by_id = Auth()->user()->id;
+					} else {
+						$msg = "Updated";
+						$coa_posting_type_save->updated_by_id = Auth()->user()->id;
+					}
+					$coa_posting_type_save->save();
+				}
+				DB::commit();
+				return response()->json(['success' => true, 'comes_from' => $msg]);
 			} else {
-				$coa_posting_type = CoaPostingType::withTrashed()->where('id', $request->id)->first();
-				$msg = "Updated";
-				$coa_posting_type->updated_by_id = Auth()->user()->id;
+				if (!empty($request->coa_posting_type_removal_ids)) {
+					$coa_posting_type_removal_ids = json_decode($request->coa_posting_type_removal_ids, true);
+					$coa_posting_type_delete = CoaPostingType::withTrashed()->whereIn('id', $coa_posting_type_removal_ids)->forcedelete();
+					$msg = "Updated";
+					return response()->json(['success' => true, 'comes_from' => $msg]);
+				}
+				return response()->json(['success' => true, 'comes_from' => '']);
 			}
 
-			$coa_posting_type->company_id = Auth::user()->company_id;
-			$coa_posting_type->name = $request->name;
-			if ($request->status == 'Active') {
-				$coa_posting_type->deleted_at = NULL;
-			} else {
-				$coa_posting_type->deleted_at = date('Y-m-d H:i:s');
-				$coa_posting_type->deleted_by_id = Auth::user()->id;
-			}
-			$coa_posting_type->save();
-
-			DB::commit();
-			return response()->json(['success' => true, 'comes_from' => $msg]);
 		} catch (Exception $e) {
 			DB::rollBack();
 			return response()->json(['success' => false, 'errors' => ['Exception Error' => $e->getMessage()]]);

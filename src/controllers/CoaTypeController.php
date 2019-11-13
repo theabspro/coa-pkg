@@ -1,7 +1,10 @@
 <?php
 
 namespace Abs\CoaPkg;
+use Abs\CoaPkg\CoaCode;
+use Abs\CoaPkg\CoaPostingType;
 use Abs\CoaPkg\CoaType;
+use App\Config;
 use App\Http\Controllers\Controller;
 use Auth;
 use DB;
@@ -17,21 +20,23 @@ class CoaTypeController extends Controller {
 	public function getCoaTypeList() {
 		$coa_type_list = CoaType::withTrashed()
 			->select(
-				'coa_types.*'
+				'coa_types.*',
 				//DB::raw('IF(coa_types.deleted_at IS NULL, "ACTIVE", "INACTIVE") as status')
+				DB::raw('count(coa_codes.id) as coa_code_names')
 			)
+			->leftjoin('coa_codes', 'coa_codes.type_id', 'coa_types.id')
 			->where('coa_types.company_id', Auth::user()->company_id)
 			->groupBy('coa_types.id')
 			->orderBy('coa_types.id', 'Desc');
 
 		return Datatables::of($coa_type_list)
-			->addColumn('status', function ($coa_type_list) {
+			->addColumn('name', function ($coa_type_list) {
 				if ($coa_type_list->deleted_at == NULL) {
-					$status = "<td><span class='status-indicator green'></span>ACTIVE</td>";
+					$name = "<td><span class='status-indicator green'></span>" . $coa_type_list->name . "</td>";
 				} else {
-					$status = "<td><span class='status-indicator red'></span>INACTIVE</td>";
+					$name = "<td><span class='status-indicator red'></span>" . $coa_type_list->name . "</td>";
 				}
-				return $status;
+				return $name;
 			})
 			->addColumn('action', function ($coa_type_list) {
 
@@ -48,14 +53,23 @@ class CoaTypeController extends Controller {
 
 	public function getCoaTypeFormdata($id = NULL) {
 
+		$this->data['extras'] = [
+			'currency_code_list' => collect(Config::where('config_type_id', 85)->select('name', 'id')->get())->prepend(['name' => 'Select Currency Code', 'id' => '']),
+			'debit_card_proposal_list' => collect(Config::where('config_type_id', 86)->select('name', 'id')->get())->prepend(['name' => 'Select Debit Card Proposal', 'id' => '']),
+			'posting_type_list' => collect(CoaPostingType::where('company_id', Auth::user()->company_id)->select('name', 'id')->get())->prepend(['name' => 'Select Posting Type', 'id' => '']),
+		];
 		if ($id == NULL) {
 			$coa_type = new CoaType;
+			$coa_type->coa_codes = [];
 			$this->data['title'] = 'Add Coa Type';
 			$this->data['action'] = 'Add';
 		} else {
 			$this->data['title'] = 'Edit Coa Type';
 			$this->data['action'] = 'Edit';
-			$coa_type = CoaType::withTrashed()->where('id', $id)->first();
+			$coa_type = CoaType::withTrashed()->where('id', $id)->with([
+				'coaCodes',
+			])
+				->first();
 		}
 		$this->data['coa_type'] = $coa_type;
 
@@ -63,19 +77,45 @@ class CoaTypeController extends Controller {
 	}
 
 	public function saveCoaType(Request $request) {
-		//dd($request->all());
+		// dd($request->all());
 		DB::beginTransaction();
 		try {
+
+			$error_messages = [
+				'name.required' => 'COA Type name is required',
+				'name.unique' => 'COA Type name is already taken',
+			];
 
 			$validator = Validator::make($request->all(), [
 				'name' => [
 					'unique:coa_types,name,' . $request->id . ',id,company_id,' . Auth::user()->company_id,
-					'required:true',
+					'required',
 				],
-			]);
+			], $error_messages);
 
 			if ($validator->fails()) {
 				return response()->json(['success' => false, 'errors' => $validator->errors()->all()]);
+			}
+
+			//VALIDATE UNIQUE FOR COA-CODE
+			if (isset($request->coa_codes) && !empty($request->coa_codes)) {
+				$error_messages_1 = [
+					'code.required' => 'COA Code is required',
+					'code.unique' => 'COA Code is already taken',
+				];
+
+				foreach ($request->coa_codes as $coa_code) {
+					$validator_1 = Validator::make($coa_code, [
+						'code' => [
+							'unique:coa_codes,code,' . $coa_code['id'] . ',id,company_id,' . Auth::user()->company_id,
+							'required',
+						],
+					], $error_messages_1);
+
+					if ($validator_1->fails()) {
+						return response()->json(['success' => false, 'errors' => $validator_1->errors()->all()]);
+					}
+				}
 			}
 
 			if (empty($request->id)) {
@@ -97,6 +137,27 @@ class CoaTypeController extends Controller {
 				$coa_type->deleted_by_id = Auth::user()->id;
 			}
 			$coa_type->save();
+
+			//DELETE COA-CODES
+			if (!empty($request->coa_code_removal_ids)) {
+				$coa_code_removal_ids = json_decode($request->coa_code_removal_ids, true);
+				CoaCode::withTrashed()->whereIn('id', $coa_code_removal_ids)->forcedelete();
+			}
+
+			if (isset($request->coa_codes) && !empty($request->coa_codes)) {
+				foreach ($request->coa_codes as $key => $coa_code) {
+					$coa_code_save = CoaCode::withTrashed()->firstOrNew(['id' => $coa_code['id']]);
+					$coa_code_save->company_id = Auth::user()->company_id;
+					$coa_code_save->fill($coa_code);
+					$coa_code_save->type_id = $coa_type->id;
+					if (empty($coa_code['id'])) {
+						$coa_code_save->created_by_id = Auth::user()->id;
+					} else {
+						$coa_code_save->updated_by_id = Auth::user()->id;
+					}
+					$coa_code_save->save();
+				}
+			}
 
 			DB::commit();
 			return response()->json(['success' => true, 'comes_from' => $msg]);

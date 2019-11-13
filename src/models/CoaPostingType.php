@@ -16,6 +16,15 @@ class CoaPostingType extends Model {
 		'updated_by_id',
 		'deleted_by_id',
 	];
+	protected $appends = ['switch_value'];
+
+	public function getSwitchValueAttribute() {
+		return !empty($this->attributes['deleted_at']) ? 'Inactive' : 'Active';
+	}
+
+	public function coaCodes() {
+		return $this->hasMany('Abs\CoaPkg\CoaCode', 'posting_type_id', 'id');
+	}
 
 	public static function createFromObject($record_data) {
 

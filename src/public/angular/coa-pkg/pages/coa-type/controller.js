@@ -33,14 +33,15 @@ app.component('coaTypeList', {
             columns: [
                 { data: 'action', searchable: false, class: 'action' },
                 { data: 'name', name: 'coa_types.name', searchable: true },
-                { data: 'status', searchable: false },
+                { data: 'coa_code_names', name: 'coa_codes.id', searchable: false },
+                // { data: 'status', searchable: false },
             ],
             rowCallback: function(row, data) {
                 $(row).addClass('highlight-row');
             },
             infoCallback: function(settings, start, end, max, total, pre) {
                 $('#table_info').html(total)
-                $('.foot_info').html('Showing ' + start + ' to ' + end + ' of ' + max + ' entries')
+                $('.foot_info').html('Showing ' + start + ' to ' + end + ' of ' + max + ' Listing')
             },
         });
         $('.dataTables_length select').select2();
@@ -88,10 +89,12 @@ app.component('coaTypeForm', {
         $http.get(
             get_form_data_url
         ).then(function(response) {
-
+// console.log(response.data);
             self.coa_type = response.data.coa_type;
+            self.extras = response.data.extras;
             self.action = response.data.action;
             self.title = response.data.title;
+            self.coa_code_removal_ids = [];
             
             if (response.data.action == "Add") {
                 self.switch_value = 'Active';
@@ -107,66 +110,123 @@ app.component('coaTypeForm', {
             $rootScope.loading = false;
         });
 
-        var form_id = '#form';
-        var v = jQuery(form_id).validate({
-            ignore: "",
-            rules: {
-                'name': {
-                    required: true,
+        /* Tab Funtion */
+        $('.btn-nxt').on("click", function() {
+            $('.cndn-tabs li.active').next().children('a').trigger("click");
+            tabPaneFooter();
+        });
+        $('.btn-prev').on("click", function() {
+            $('.cndn-tabs li.active').prev().children('a').trigger("click");
+            tabPaneFooter();
+        });
+
+        self.addNewCoaCode = function() {
+            self.coa_type.coa_codes.push({
+                id: '',
+                company_id:'',
+                code:'',
+                name: '',
+            });
+        }
+
+        self.removeCoaCode = function(index, coa_code_id) {
+            if(coa_code_id) {
+                self.coa_code_removal_ids.push(coa_code_id);
+                $('#coa_code_removal_ids').val(JSON.stringify(self.coa_code_removal_ids));
+            }
+            self.coa_type.coa_codes.splice(index, 1);
+        }
+        $('#submit').click(function() { 
+            var form_id = '#form';
+            $.validator.addClassRules({
+                coa_code_valid: {
                     minlength: 3,
                     maxlength: 191,
+                    required:true,
                 },
-            },
-            submitHandler: function(form) {
-                let formData = new FormData($(form_id)[0]);
-                $('#submit').button('loading');
-                $.ajax({
-                        url: laravel_routes['saveCoaType'],
-                        method: "POST",
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                    })
-                    .done(function(res) {
-                        // console.log(res.success);
-                        if (!res.success) {
-                            // $('#submit').button('reset');
-                            $('#submit').prop('disabled', 'disabled');
-                            var errors = '';
-                            for (var i in res.errors) {
-                                errors += '<li>' + res.errors[i] + '</li>';
+                coa_code_name: {
+                    minlength: 3,
+                    maxlength: 191,
+                    required:true,
+                },
+            });
+
+            var v = jQuery(form_id).validate({
+                ignore: "",
+                rules: {
+                    'name': {
+                        required: true,
+                        minlength: 3,
+                        maxlength: 191,
+                    },
+                },
+                messages: {
+                    'name': {
+                        minlength: 'Enter atleast 3 characters',
+                    },
+                },
+                invalidHandler: function(event, validator) {
+                    // custom_noty('error', 'Please check in each tab and fix errors!');
+                    new Noty({
+                        type: 'error',
+                        layout: 'topRight',
+                        text: 'Please check in each tab and fix errors!',
+                    }).show();
+                },
+                submitHandler: function(form) {
+                    let formData = new FormData($(form_id)[0]);
+                    $('#submit').button('loading');
+                    $.ajax({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            url: laravel_routes['saveCoaType'],
+                            method: "POST",
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                        })
+                        .done(function(res) {
+                            // console.log(res.success);
+                            if (!res.success) {
+                                // $('#submit').button('reset');
+                                $('#submit').prop('disabled', 'disabled');
+                                var errors = '';
+                                for (var i in res.errors) {
+                                    errors += '<li>' + res.errors[i] + '</li>';
+                                }
+                                new Noty({
+                                    type: 'error',
+                                    layout: 'topRight',
+                                    text: errors
+                                }).show();
+                                // custom_noty('error', errors);
+                                $('#submit').button('reset');
+
+                            } else {
+                                new Noty({
+                                    type: 'success',
+                                    layout: 'topRight',
+                                    text: 'Coa Type ' + res.comes_from + ' Successfully',
+                                }).show();
+                                // custom_noty('success', 'Coa Type ' + res.comes_from + ' Successfully');
+                                $('#submit').button('reset');
+
+                                $location.path('/coa-pkg/coa-type/list')
+                                $scope.$apply()
                             }
+                        })
+                        .fail(function(xhr) {
+                            $('#submit').button('reset');
                             new Noty({
                                 type: 'error',
                                 layout: 'topRight',
-                                text: errors
+                                text: 'Something went wrong at server',
                             }).show();
-                            // custom_noty('error', errors);
-                            $('#submit').button('reset');
-
-                        } else {
-                            new Noty({
-                                type: 'success',
-                                layout: 'topRight',
-                                text: 'Coa Type ' + res.comes_from + ' Successfully',
-                            }).show();
-                            // custom_noty('success', 'Coa Type ' + res.comes_from + ' Successfully');
-                            $('#submit').button('reset');
-
-                            $location.path('/coa-pkg/coa-type/list')
-                            $scope.$apply()
-                        }
-                    })
-                    .fail(function(xhr) {
-                        $('#submit').button('reset');
-                        new Noty({
-                            type: 'error',
-                            layout: 'topRight',
-                            text: 'Something went wrong at server',
-                        }).show();
-                        // custom_noty('error', 'Something went wrong at server');
-                    });
-            },
+                            // custom_noty('error', 'Something went wrong at server');
+                        });
+                },
+            });
         });
     }
 });

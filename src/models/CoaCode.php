@@ -23,6 +23,14 @@ class CoaCode extends Model {
 		'deleted_by_id',
 	];
 
+	public function coaTypes() {
+		return $this->belongsTo('Abs\CoaPkg\CoaType')->withTrashed();
+	}
+
+	public function coaPostingTypes() {
+		return $this->belongsTo('Abs\CoaPkg\CoaPostingType')->withTrashed();
+	}
+
 	public static function createFromObject($record_data) {
 
 		$errors = [];
