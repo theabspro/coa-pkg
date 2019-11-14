@@ -11,7 +11,7 @@ app.component('coaPostingTypeList', {
         }
         var search_cookie = $scope.getCookie('search_name');
         $('#search_coa_posting_type').val(search_cookie);
-        
+
         var table_scroll;
         table_scroll = $('.page-main-content.list-page-content').height() - 37;
         var dataTable = $('#coa-posting-type-table').dataTable({
@@ -76,12 +76,14 @@ app.component('coaPostingTypeList', {
                 coa_posting_type_delete_url + '/' + id,
             ).then(function(response) {
                 if (response.data.success) {
-                    new Noty({
+                    $noty =new Noty({
                         type: 'success',
                         layout: 'topRight',
                         text: 'Coa Posting Type Deleted Successfully',
                     }).show();
-
+                    setTimeout(function() {
+                        $noty.close();
+                    }, 3000);
                     $('#coa-posting-type-table').DataTable().ajax.reload();
                     $scope.$apply();
                 }
@@ -165,23 +167,28 @@ app.component('coaPostingTypeForm', {
                                 for (var i in res.errors) {
                                     errors += '<li>' + res.errors[i] + '</li>';
                                 }
-                                new Noty({
+                                $noty =new Noty({
                                     type: 'error',
                                     layout: 'topRight',
                                     text: errors
                                 }).show();
+                                setTimeout(function() {
+                                    $noty.close();
+                                }, 3000);
                                 // custom_noty('error', errors);
                                 $('#submit').button('reset');
 
                             } else {
                                 if(res.comes_from != '') {
-                                    new Noty({
+                                    $noty =new Noty({
                                     type: 'success',
                                     layout: 'topRight',
                                     text: 'Coa Posting Type ' + res.comes_from + ' Successfully',
                                 }).show();
                                 }
-                               
+                                setTimeout(function() {
+                                    $noty.close();
+                                }, 3000);
                                 // custom_noty('success', 'Coa Type ' + res.comes_from + ' Successfully');
                                 $('#submit').button('reset');
 
@@ -191,11 +198,14 @@ app.component('coaPostingTypeForm', {
                         })
                         .fail(function(xhr) {
                             $('#submit').button('reset');
-                            new Noty({
+                            $noty =new Noty({
                                 type: 'error',
                                 layout: 'topRight',
                                 text: 'Something went wrong at server',
                             }).show();
+                            setTimeout(function() {
+                                $noty.close();
+                            }, 3000);
                             // custom_noty('error', 'Something went wrong at server');
                         });
                 },
