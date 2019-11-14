@@ -3,7 +3,8 @@ app.component('coaPostingTypeList', {
     controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $element) {
         var self = this;
         self.hasPermission = HelperService.hasPermission;
-        
+        var table_scroll;
+        table_scroll = $('.page-main-content').height() - 37;
         var dataTable = $('#coa-posting-type-table').dataTable({
             "dom": cndn_dom_structure,
             "language": {
@@ -21,7 +22,8 @@ app.component('coaPostingTypeList', {
             paging: true,
             searching: true,
             ordering: false,
-
+            scrollY: table_scroll + "px",
+            scrollCollapse: true,
             ajax: {
                 url: laravel_routes['getCoaPostingTypeList'],
                 type: "GET",
