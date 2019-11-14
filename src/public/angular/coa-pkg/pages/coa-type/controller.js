@@ -13,7 +13,7 @@ app.component('coaTypeList', {
         $('#search_coa_type').val(search_name_cookie);
         
         var table_scroll;
-        table_scroll = $('.page-main-content').height() - 37;
+        table_scroll = $('.page-main-content.list-page-content').height() - 37;
         var dataTable = $('#coa-type-table').dataTable({
             "dom": cndn_dom_structure,
             "language": {
