@@ -3,6 +3,15 @@ app.component('coaTypeList', {
     controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $element) {
         var self = this;
         self.hasPermission = HelperService.hasPermission;
+
+        $scope.getCookie = function (name) {
+          var value = "; " + document.cookie;
+          var parts = value.split("; " + name + "=");
+          if (parts.length == 2) return parts.pop().split(";").shift();
+        }
+        var search_name_cookie = $scope.getCookie('filter_name');
+        $('#search_coa_type').val(search_name_cookie);
+        
         var table_scroll;
         table_scroll = $('.page-main-content').height() - 37;
         var dataTable = $('#coa-type-table').dataTable({
@@ -48,11 +57,14 @@ app.component('coaTypeList', {
         });
         $('.dataTables_length select').select2();
         $("#search_coa_type").keyup(function() { //alert(this.value);
-            dataTable.fnFilter(this.value);
+            var search_value = this.value;
+            dataTable.fnFilter(search_value);
+            document.cookie = "filter_name="+search_value;
         });
         
         $(".search_clear").on("click", function() {
             $('#search_coa_type').val('');
+            document.cookie = "filter_name=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
             $('#coa-type-table').DataTable().search('').draw();
         });
 

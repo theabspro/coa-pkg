@@ -3,8 +3,17 @@ app.component('coaPostingTypeList', {
     controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $element) {
         var self = this;
         self.hasPermission = HelperService.hasPermission;
+
+        $scope.getCookie = function (name) {
+          var value = "; " + document.cookie;
+          var parts = value.split("; " + name + "=");
+          if (parts.length == 2) return parts.pop().split(";").shift();
+        }
+        var search_cookie = $scope.getCookie('search_name');
+        $('#search_coa_posting_type').val(search_cookie);
+        
         var table_scroll;
-        table_scroll = $('.page-main-content').height() - 37;
+        table_scroll = $('.page-main-content.list-page-content').height() - 37;
         var dataTable = $('#coa-posting-type-table').dataTable({
             "dom": cndn_dom_structure,
             "language": {
@@ -47,11 +56,14 @@ app.component('coaPostingTypeList', {
         });
         $('.dataTables_length select').select2();
         $("#search_coa_posting_type").keyup(function() { //alert(this.value);
-            dataTable.fnFilter(this.value);
+            var filter_value = this.value;
+            dataTable.fnFilter(filter_value);
+            document.cookie = "search_name="+filter_value;
         });
         
         $(".search_clear").on("click", function() {
             $('#search_coa_posting_type').val('');
+            document.cookie = "search_name=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
             $('#coa-posting-type-table').DataTable().search('').draw();
         });
 
