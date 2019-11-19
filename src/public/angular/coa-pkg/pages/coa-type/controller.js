@@ -183,11 +183,14 @@ app.component('coaTypeForm', {
                 },
                 invalidHandler: function(event, validator) {
                     // custom_noty('error', 'Please check in each tab and fix errors!');
-                    new Noty({
+                    $noty = new Noty({
                         type: 'error',
                         layout: 'topRight',
                         text: 'Please check in each tab and fix errors!',
                     }).show();
+                    setTimeout(function() {
+                        $noty.close();
+                    }, 3000);
                 },
                 submitHandler: function(form) {
                     let formData = new FormData($(form_id)[0]);
