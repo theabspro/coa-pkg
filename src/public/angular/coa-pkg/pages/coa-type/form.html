@@ -94,7 +94,7 @@
                                                                <input type="text" class="form-control type-sm coa_code_name" name="coa_codes[{{index}}][name]" ng-model="coa_code.name" placeholder="Enter Description" autocomplete="off" minlength="3" maxlength="191" required="required"/> 
                                                             </td>
                                                             <td>
-                                                                <md-select class="type-sm" ng-model="coa_code.currency_code_id" placeholder="Select any one" md-on-close="clearSearchCurrencyCode()" data-md-container-class="selectdemoSelectHeader">
+                                                                <md-select class="type-sm" ng-model="coa_code.currency_code_id" placeholder="Select Currency Code" md-on-close="clearSearchCurrencyCode()" data-md-container-class="selectdemoSelectHeader">
                                                                     <md-select-header class="demo-select-header">
                                                                         <input ng-model="searchCurrencyCode" type="search" placeholder="Search for a Currency Code.." class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
                                                                     </md-select-header>
@@ -105,7 +105,7 @@
                                                                 <input type="hidden" name="coa_codes[{{index}}][currency_code_id]" value="{{coa_code.currency_code_id}}"> 
                                                             </td>
                                                             <td>
-                                                               <md-select class="type-sm" ng-model="coa_code.debit_credit_proposal_id" placeholder="Select any one" md-on-close="clearSearchDebitCardProposal()" data-md-container-class="selectdemoSelectHeader">
+                                                               <md-select class="type-sm" ng-model="coa_code.debit_credit_proposal_id" placeholder="Select Debit Card Proposal" md-on-close="clearSearchDebitCardProposal()" data-md-container-class="selectdemoSelectHeader">
                                                                     <md-select-header class="demo-select-header">
                                                                         <input ng-model="searchDebitCardProposal" type="search" placeholder="Search for a Debit Card Proposal.." class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
                                                                     </md-select-header>
@@ -116,7 +116,7 @@
                                                                 <input type="hidden" name="coa_codes[{{index}}][debit_credit_proposal_id]" value="{{coa_code.debit_credit_proposal_id}}"> 
                                                             </td>
                                                             <td>
-                                                               <md-select class="type-sm" ng-model="coa_code.posting_type_id" placeholder="Select any one" md-on-close="clearSearchPostingType()" data-md-container-class="selectdemoSelectHeader">
+                                                               <md-select class="type-sm" ng-model="coa_code.posting_type_id" placeholder="Select Posting type" md-on-close="clearSearchPostingType()" data-md-container-class="selectdemoSelectHeader">
                                                                     <md-select-header class="demo-select-header">
                                                                         <input ng-model="searchPostingType" type="search" placeholder="Search for a Posting type.." class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
                                                                     </md-select-header>
