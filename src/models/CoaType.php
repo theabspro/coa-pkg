@@ -21,10 +21,24 @@ class CoaType extends Model {
 		return $this->hasMany('Abs\CoaPkg\CoaCode', 'type_id', 'id');
 	}
 
-	public static function createFromObject($record_data) {
+	public static function createFromCollection($records, $company = null) {
+		foreach ($records as $key => $record_data) {
+			try {
+				if (!$record_data->company) {
+					continue;
+				}
+				$record = self::createFromObject($record_data, $company);
+			} catch (Exception $e) {
+				dd($e);
+			}
+		}
+	}
+	public static function createFromObject($record_data, $company = null) {
 
 		$errors = [];
-		$company = Company::where('code', $record_data->company)->first();
+		if (!$company) {
+			$company = Company::where('code', $record_data->company)->first();
+		}
 		if (!$company) {
 			dump('Invalid Company : ' . $record_data->company);
 			return;
@@ -43,19 +57,6 @@ class CoaType extends Model {
 		$record->created_by_id = $admin->id;
 		$record->save();
 		return $record;
-	}
-
-	public static function createFromCollection($records) {
-		foreach ($records as $key => $record_data) {
-			try {
-				if (!$record_data->company) {
-					continue;
-				}
-				$record = self::createFromObject($record_data);
-			} catch (Exception $e) {
-				dd($e);
-			}
-		}
 	}
 
 }
