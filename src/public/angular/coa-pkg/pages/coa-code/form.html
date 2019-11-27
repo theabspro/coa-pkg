@@ -1,0 +1,135 @@
+<!-- Content Wrap -->
+<div class="content-wrap">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-header-inner">
+            <div class="page-header-content-left">
+                <div class="page-header-content button-block">
+                    <a href="#!/coa-pkg/coa-code/list" type="button" class="btn-back btn-img"><img class="img-responsive" src="./public/theme/img/content/previous.svg" alt="Back" /></a>
+                </div><!-- Page Header Content -->
+                <div class="page-header-content title-block">
+                    <h1 class="title"><b>{{$ctrl.title}}</b></h1>
+                    <p class="subtitle">Coa Code List / {{$ctrl.action}}</p>
+                </div><!-- Page Header Content -->
+            </div><!-- Page Header Content Left -->
+        </div><!-- Page Header Inner -->
+    </div><!-- Page Header -->
+
+    <!-- Page Main Content -->
+    <div class="page-main-content form-content type2" style="padding: 0;">
+        <form id="form" enctype="multipart-formdata" autocomplete="off">
+            <input type="hidden" name="id" ng-modal="$ctrl.coa_code.id" value="{{$ctrl.coa_code.id}}">
+            <div class="page-tab-form pb-70">
+                <div class="tab-form-wrap">
+                    <div class="tab-form-header">
+                        <div class="tab-header">
+                                <!-- Filters -->
+                            <div class="isotope-filters animated" data-animation="fadeInLeft" data-animation-delay="300">
+                                <ul class="nav nav-pills cndn-tabs">
+                                    <li class="active"><a class="filter active" data-target="#category-information" data-toggle="tab" aria-expanded="true">COA Code</a></li>
+                                </ul>
+                            </div> 
+                        </div><!-- Tab Header -->
+                    </div><!-- Tab Form Header -->
+                    <div class="tab-form-body">
+                        <div class="tab-content">
+                            <!-- TAB PANEL -->
+                            <div class="tab-pane fade in active" id="category-information" data-animation="fadeInUp" data-animation-delay="300">
+                                <div class="tab-pane-wrap">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="input-text form-group">
+                                                <label>COA Code<sup class="mandatory">*</sup></label>
+                                                <input type="text" class="form-control type-sm coa_code_valid" name="code" ng-model="$ctrl.coa_code.code" placeholder="Enter COA Code" autocomplete="off" minlength="3" maxlength="191" required="required"/>
+                                            </div><!-- Feild -->
+                                        </div><!-- Column -->
+                                        <div class="col-md-3">
+                                            <div class="input-text form-group">
+                                                <label>Description<sup class="mandatory">*</sup></label>
+                                                <input type="text" class="form-control type-sm coa_code_name" name="name" ng-model="$ctrl.coa_code.name" placeholder="Enter Description" autocomplete="off" minlength="3" maxlength="191" required="required"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="input-text form-group">
+                                                <label>Type<sup class="mandatory">*</sup></label>
+                                                <md-select class="type-sm" ng-model="$ctrl.coa_code.type_id" placeholder="Select Type" md-on-close="clearSearchType()" data-md-container-class="selectdemoSelectHeader">
+                                                    <md-select-header class="demo-select-header">
+                                                        <input ng-model="searchType" type="search" placeholder="Search for a Type.." class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
+                                                    </md-select-header>
+                                                    <md-optgroup>
+                                                        <md-option ng-value="i.id" ng-repeat="i in $ctrl.extras.type_list | filter:searchType">{{i.name}}</md-option>
+                                                    </md-optgroup>
+                                                </md-select>
+                                                <input type="hidden" name="type_id" value="{{$ctrl.coa_code.type_id}}" class="required"> 
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="input-text form-group">
+                                                <label>Posting type<sup class="mandatory">*</sup></label>
+                                                <md-select class="type-sm" ng-model="$ctrl.coa_code.posting_type_id" placeholder="Select Posting type" md-on-close="clearSearchPostingType()" data-md-container-class="selectdemoSelectHeader">
+                                                    <md-select-header class="demo-select-header">
+                                                        <input ng-model="searchPostingType" type="search" placeholder="Search for a Posting type.." class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
+                                                    </md-select-header>
+                                                    <md-optgroup>
+                                                        <md-option ng-value="i.id" ng-repeat="i in $ctrl.extras.posting_type_list | filter:searchPostingType">{{i.name}}</md-option>
+                                                    </md-optgroup>
+                                                </md-select>
+                                                <input type="hidden" name="posting_type_id" value="{{$ctrl.coa_code.posting_type_id}}" class="required"> 
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="input-text form-group">
+                                                <label>Currency Code</label>
+                                                <md-select class="type-sm" ng-model="$ctrl.coa_code.currency_code_id" placeholder="Select Currency Code" md-on-close="clearSearchCurrencyCode()" data-md-container-class="selectdemoSelectHeader">
+                                                    <md-select-header class="demo-select-header">
+                                                        <input ng-model="searchCurrencyCode" type="search" placeholder="Search for a Currency Code.." class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
+                                                    </md-select-header>
+                                                    <md-optgroup>
+                                                        <md-option ng-value="i.id" ng-repeat="i in $ctrl.extras.currency_code_list | filter:searchCurrencyCode">{{i.name}}</md-option>
+                                                    </md-optgroup>
+                                                </md-select>
+                                                <input type="hidden" name="currency_code_id" value="{{$ctrl.coa_code.currency_code_id}}"> 
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="input-text form-group">
+                                                <label>Debit Card proposal</label>
+                                                <md-select class="type-sm" ng-model="$ctrl.coa_code.debit_credit_proposal_id" placeholder="Select Debit Card Proposal" md-on-close="clearSearchDebitCardProposal()" data-md-container-class="selectdemoSelectHeader">
+                                                    <md-select-header class="demo-select-header">
+                                                        <input ng-model="searchDebitCardProposal" type="search" placeholder="Search for a Debit Card Proposal.." class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
+                                                    </md-select-header>
+                                                    <md-optgroup>
+                                                        <md-option ng-value="i.id" ng-repeat="i in $ctrl.extras.debit_card_proposal_list | filter:searchDebitCardProposal">{{i.name}}</md-option>
+                                                    </md-optgroup>
+                                                </md-select>
+                                                <input type="hidden" name="debit_credit_proposal_id" value="{{$ctrl.coa_code.debit_credit_proposal_id}}"> 
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="input-text form-group">
+                                                <label>Active Status<sup class="mandatory">*</sup></label>
+                                                <div class="tab-switch">
+                                                    <md-switch ng-model="$ctrl.switch_value" aria-label="Switch 1" ng-true-value="'Inactive'" ng-false-value="'Active'" class="md-warn">
+                                                        {{ $ctrl.switch_value }}
+                                                    </md-switch>
+                                                    <input type="hidden" name="status" value="{{$ctrl.switch_value}}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane-footer">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <button type="submit" id="submit" class="btn btn-primary">Submit</button>
+                                            </div>
+                                        </div>
+                                    </div><!-- Tab Footer -->
+                                </div><!-- Tab Pane Wrap -->
+                            </div><!-- Tabe Pane -->
+                        </div><!-- Tab Content -->   
+                    </div><!-- Tab Form Body -->
+                </div><!-- Tab Form Wrap -->
+            </div><!-- Page Form -->
+        </form>
+    </div><!-- Page Main Content -->
+</div><!-- Content Wrap -->
