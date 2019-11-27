@@ -18,4 +18,5 @@ Route::group(['namespace' => 'Abs\CoaPkg', 'middleware' => ['web', 'auth'], 'pre
 	Route::post('/coa-code/save', 'CoaCodeController@saveCoaCode')->name('saveCoaCode');
 	Route::get('/coa-code/get-form-data/{id?}', 'CoaCodeController@getCoaCodeFormdata')->name('getCoaCodeFormdata');
 	Route::get('/coa-code/delete/{id?}', 'CoaCodeController@deleteCoaCode')->name('deleteCoaCode');
+	Route::get('/coa-code/filter', 'CoaCodeController@CoaCodeFilter')->name('CoaCodeFilter');
 });

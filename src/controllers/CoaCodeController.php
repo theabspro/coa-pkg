@@ -19,7 +19,26 @@ class CoaCodeController extends Controller {
 	public function __construct() {
 	}
 
+	public function CoaCodeFilter(Request $request) {
+		$this->data['extras'] = [
+			'currency_code_list' => collect(Config::where('config_type_id', 85)->select('name', 'id')->get())->prepend(['name' => 'Select Currency Code', 'id' => '']),
+			'debit_card_proposal_list' => collect(Config::where('config_type_id', 86)->select('name', 'id')->get())->prepend(['name' => 'Select Proposal Type', 'id' => '']),
+			'posting_type_list' => collect(CoaPostingType::where('company_id', Auth::user()->company_id)->select('name', 'id')->get())->prepend(['name' => 'Select Posting Type', 'id' => '']),
+			'type_list' => collect(CoaType::where('company_id', Auth::user()->company_id)->select('name', 'id')->get())->prepend(['name' => 'Select Type', 'id' => '']),
+		];
+		$this->data['status_filter'] = array(
+			array('name' => "Select Status", 'id' => "0"),
+			array('name' => "Active", 'id' => "1"),
+			array('name' => "Inactive", 'id' => "2"),
+		);
+		return response()->json($this->data);
+	}
+
 	public function getCoaCodeList(Request $request) {
+		//dd($request->all());
+		$coa_code = $request->coa_code;
+		$coa_code_description = $request->description;
+
 		$coa_code_list = CoaCode::withTrashed()
 			->select(
 				'coa_codes.*',
@@ -31,7 +50,51 @@ class CoaCodeController extends Controller {
 			->leftjoin('coa_posting_types', 'coa_posting_types.id', 'coa_codes.posting_type_id')
 			->leftjoin('configs', 'configs.id', 'coa_codes.currency_code_id')
 			->where('coa_codes.company_id', Auth::user()->company_id)
-			->groupBy('coa_codes.id')
+			->where(function ($query) use ($coa_code) {
+				if ($coa_code != null) {
+					$query->where("coa_codes.code", 'like', "%" . $coa_code . "%");
+				}
+			})
+			->where(function ($query) use ($coa_code_description) {
+				if ($coa_code_description != null) {
+					$query->where("coa_codes.name", 'like', "%" . $coa_code_description . "%");
+				}
+			})
+			->where(function ($query) use ($request) {
+				if (!empty($request->coa_type)) {
+					$query->where('coa_codes.type_id', $request->coa_type);
+				}
+			})
+			->where(function ($query) use ($request) {
+				if (!empty($request->posting_type)) {
+					$query->where('coa_codes.posting_type_id', $request->posting_type);
+				}
+			})
+			->where(function ($query) use ($request) {
+				if (!empty($request->currency_code)) {
+					$query->where('coa_codes.currency_code_id', $request->currency_code);
+				}
+			})
+			->where(function ($query) use ($request) {
+				if (!empty($request->proposal_type)) {
+					$query->where('coa_codes.debit_credit_proposal_id', $request->proposal_type);
+				}
+			});
+		if ($request->status != '') {
+			$coa_code_list = $coa_code_list->where(function ($query) use ($request) {
+				if ($request->status == '1') {
+					$query->whereNull('coa_codes.deleted_at');
+				} elseif ($request->status == '2') {
+					$query->whereNotNull('coa_codes.deleted_at');
+				}
+			});
+		} else {
+			$coa_code_list = $coa_code_list->where(function ($query) use ($request) {
+				$query->whereNull('coa_codes.deleted_at');
+			});
+		}
+
+		$coa_code_list = $coa_code_list->groupBy('coa_codes.id')
 			->orderBy('coa_codes.id', 'Desc');
 
 		return Datatables::of($coa_code_list)
@@ -59,7 +122,7 @@ class CoaCodeController extends Controller {
 	public function getCoaCodeFormdata($id = NULL) {
 		$this->data['extras'] = [
 			'currency_code_list' => collect(Config::where('config_type_id', 85)->select('name', 'id')->get())->prepend(['name' => 'Select Currency Code', 'id' => '']),
-			'debit_card_proposal_list' => collect(Config::where('config_type_id', 86)->select('name', 'id')->get())->prepend(['name' => 'Select Debit Card Proposal', 'id' => '']),
+			'debit_card_proposal_list' => collect(Config::where('config_type_id', 86)->select('name', 'id')->get())->prepend(['name' => 'Select Proposal Type', 'id' => '']),
 			'posting_type_list' => collect(CoaPostingType::where('company_id', Auth::user()->company_id)->select('name', 'id')->get())->prepend(['name' => 'Select Posting Type', 'id' => '']),
 			'type_list' => collect(CoaType::where('company_id', Auth::user()->company_id)->select('name', 'id')->get())->prepend(['name' => 'Select Type', 'id' => '']),
 		];

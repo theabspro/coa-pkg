@@ -3,7 +3,13 @@ app.component('coaCodeList', {
     controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $element) {
         var self = this;
         self.hasPermission = HelperService.hasPermission;
-
+        $http.get(
+            coa_code_filter_url
+        ).then(function(response) {
+            self.extras = response.data.extras;
+            self.status_filter = response.data.status_filter;
+            $rootScope.loading = false;
+        });
         $scope.getCookie = function (name) {
           var value = "; " + document.cookie;
           var parts = value.split("; " + name + "=");
@@ -38,6 +44,13 @@ app.component('coaCodeList', {
                 type: "GET",
                 dataType: "json",
                 data: function(d) {
+                    d.coa_code = $('#coa_code').val();
+                    d.description = $('#description').val();
+                    d.coa_type = $('#coa_type').val();
+                    d.posting_type = $('#posting_type').val();
+                    d.currency_code = $('#currency_code').val();
+                    d.proposal_type = $('#proposal_type').val();
+                    d.status = $('#status').val();
                 }
             },
 
@@ -69,7 +82,44 @@ app.component('coaCodeList', {
             document.cookie = "search_name=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
             $('#coa-code-table').DataTable().search('').draw();
         });
-
+        //TABLE-FILTER
+        $('#coa_code').keyup(function() {
+            dataTable.fnFilter();
+        });
+        $('#description').keyup(function() {
+            dataTable.fnFilter();
+        });
+        $scope.onSelectedType = function(selected_type_id) {
+            setTimeout(function() {
+                $('#coa_type').val(selected_type_id);
+                dataTable.fnFilter();
+            }, 900);
+        }
+        $scope.onSelectedPostingType = function(selected_posting_type_id) {
+            setTimeout(function() {
+                $('#posting_type').val(selected_posting_type_id);
+                dataTable.fnFilter();
+            }, 900);
+        }
+        $scope.onSelectedCurrencyCode = function(selected_currency_code_id) {
+            setTimeout(function() {
+                $('#currency_code').val(selected_currency_code_id);
+                dataTable.fnFilter();
+            }, 900);
+        }
+        $scope.onSelectedProposalType = function(selected_proposal_type_id) {
+            setTimeout(function() {
+                $('#proposal_type').val(selected_proposal_type_id);
+                dataTable.fnFilter();
+            }, 900);
+        }
+        $scope.onSelectedStatus = function(selected_status_id) {
+            setTimeout(function() {
+                $('#status').val(selected_status_id);
+                dataTable.fnFilter();
+            }, 900);
+        }
+        //END-FILTER
         $scope.calldeleteConfirm = function(id) {
             $('#coa_code_id').val(id);
         }

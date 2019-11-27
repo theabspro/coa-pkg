@@ -65,7 +65,7 @@
                                         </div>
                                         <div class="col-md-3">
                                             <div class="input-text form-group">
-                                                <label>Posting type<sup class="mandatory">*</sup></label>
+                                                <label>Posting Type<sup class="mandatory">*</sup></label>
                                                 <md-select class="type-sm" ng-model="$ctrl.coa_code.posting_type_id" placeholder="Select Posting type" md-on-close="clearSearchPostingType()" data-md-container-class="selectdemoSelectHeader">
                                                     <md-select-header class="demo-select-header">
                                                         <input ng-model="searchPostingType" type="search" placeholder="Search for a Posting type.." class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
@@ -93,8 +93,8 @@
                                         </div>
                                         <div class="col-md-3">
                                             <div class="input-text form-group">
-                                                <label>Debit Card proposal</label>
-                                                <md-select class="type-sm" ng-model="$ctrl.coa_code.debit_credit_proposal_id" placeholder="Select Debit Card Proposal" md-on-close="clearSearchDebitCardProposal()" data-md-container-class="selectdemoSelectHeader">
+                                                <label>Proposal Type</label>
+                                                <md-select class="type-sm" ng-model="$ctrl.coa_code.debit_credit_proposal_id" placeholder="Select Proposal Type" md-on-close="clearSearchDebitCardProposal()" data-md-container-class="selectdemoSelectHeader">
                                                     <md-select-header class="demo-select-header">
                                                         <input ng-model="searchDebitCardProposal" type="search" placeholder="Search for a Debit Card Proposal.." class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
                                                     </md-select-header>
@@ -107,7 +107,7 @@
                                         </div>
                                         <div class="col-md-3">
                                             <div class="input-text form-group">
-                                                <label>Active Status<sup class="mandatory">*</sup></label>
+                                                <label>Status<sup class="mandatory">*</sup></label>
                                                 <div class="tab-switch">
                                                     <md-switch ng-model="$ctrl.switch_value" aria-label="Switch 1" ng-true-value="'Inactive'" ng-false-value="'Active'" class="md-warn">
                                                         {{ $ctrl.switch_value }}

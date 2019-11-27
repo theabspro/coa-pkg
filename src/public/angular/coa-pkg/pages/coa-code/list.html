@@ -5,9 +5,9 @@
                 <div class="page-header-content title-block">
                     <h1 class="title type-2">COA Codes List</h1>
                 </div><!-- Page Header Content -->
-                <!-- <div class="page-header-content button-block">
+                <div class="page-header-content button-block">
                     <button class="btn btn-bordered" data-toggle="modal" data-target="#filter"><i class="icon ion-md-funnel"></i>Filter</button>
-                </div> -->
+                </div>
             </div><!-- Page Header Content Left -->
             <div class="page-header-content-right">
                 <div class="page-header-content indicator-block">
@@ -53,6 +53,109 @@
         </div>
     </div>
 </div><!-- Content Wrap -->
+
+<div class="modal fade filter" id="filter" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close ripple" data-dismiss="modal" aria-label="Close"><i class="icon ion-md-close"></i></button>
+                <h5 class="modal-title" id="myModalLabel">Filter</h5>
+            </div><!-- Modal Header -->
+            <div class="modal-body">
+                <div class="modal-form mb-30">
+                    <div class="row modal-row">
+                        <div class="col-sm-6">
+                            <div class="input-text form-group">
+                                <div class="form-group">
+                                    <label>Coa Code</label>
+                                    <input type="text" class="form-control" name="coa_code" value="" id="coa_code" placeholder="Enter COA Code" autocomplete="off"/>
+                                </div>
+                            </div><!-- Field -->
+                        </div><!-- Column -->
+                        <div class="col-sm-6">
+                            <div class="input-text form-group">
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    <input type="text" class="form-control" name="description" value="" id="description" placeholder="Enter Description" autocomplete="off"/>
+                                </div>
+                            </div><!-- Field -->
+                        </div><!-- Column -->
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Type</label>
+                                <ui-select ng-model="$ctrl.type_id" theme="select2" ng-change="onSelectedType($ctrl.type_id)">
+                                    <ui-select-match placeholder="Select Type">
+                                        {{$select.selected.name || $select.selected}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="i.id as i in $ctrl.extras.type_list | propsFilter: {name: $select.search}">
+                                        <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <input type="hidden" name="coa_type" id="coa_type" value="">
+                            </div>
+                        </div><!-- Column -->
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Posting type</label>
+                                <ui-select ng-model="$ctrl.posting_type_id" theme="select2" ng-change="onSelectedPostingType($ctrl.posting_type_id)">
+                                    <ui-select-match placeholder="Select Posting type">
+                                        {{$select.selected.name || $select.selected}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="i.id as i in $ctrl.extras.posting_type_list | propsFilter: {name: $select.search}">
+                                        <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <input type="hidden" name="posting_type" id="posting_type" value="">
+                            </div>
+                        </div><!-- Column -->
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Currency Code</label>
+                                <ui-select ng-model="$ctrl.currency_code_id" ng-change="onSelectedCurrencyCode($ctrl.currency_code_id)">
+                                    <ui-select-match placeholder="Select Currency Code">
+                                        {{$select.selected.name || $select.selected}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="i.id as i in $ctrl.extras.currency_code_list | propsFilter: {name: $select.search}">
+                                        <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <input type="hidden" name="currency_code" id="currency_code" value="">
+                            </div>
+                        </div><!-- Column -->
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Proposal Type</label>
+                                <ui-select ng-model="$ctrl.debit_credit_proposal_id" ng-change="onSelectedProposalType($ctrl.debit_credit_proposal_id)">
+                                    <ui-select-match placeholder="Select Proposal Type">
+                                        {{$select.selected.name || $select.selected}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="i.id as i in $ctrl.extras.debit_card_proposal_list | propsFilter: {name: $select.search}">
+                                        <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <input type="hidden" name="proposal_type" id="proposal_type" value="">
+                            </div>
+                        </div><!-- Column -->
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Status</label>
+                                <ui-select ng-model="$ctrl.status_id" ng-change="onSelectedStatus($ctrl.status_id)">
+                                    <ui-select-match placeholder="Select Status">
+                                        {{$select.selected.name || $select.selected}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="i.id as i in $ctrl.status_filter | propsFilter: {name: $select.search}">
+                                        <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <input type="hidden" name="status" id="status" value="">
+                            </div>
+                        </div><!-- Column -->
+                    </div><!-- Row -->
+                </div><!-- Modal Form -->
+            </div><!-- Modal Body -->
+        </div><!-- Modal Content -->
+    </div><!-- Modal Dialog -->
+</div><!-- Modal Content -->
 
 <!-- Modal -->
 <div class="modal fade alert-modal failure" id="coa-code-delete-modal" role="dialog" aria-labelledby="myModalLabel">
