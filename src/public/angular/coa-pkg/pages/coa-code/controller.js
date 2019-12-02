@@ -10,6 +10,7 @@ app.component('coaCodeList', {
             self.status_filter = response.data.status_filter;
             $rootScope.loading = false;
         });
+        
         $scope.getCookie = function (name) {
           var value = "; " + document.cookie;
           var parts = value.split("; " + name + "=");
@@ -70,6 +71,7 @@ app.component('coaCodeList', {
                 $('.foot_info').html('Showing ' + start + ' to ' + end + ' of ' + max + ' Listing')
             },
         });
+
         $('.dataTables_length select').select2();
         $("#search_coa_code").keyup(function() { //alert(this.value);
             var filter_coa = this.value;

@@ -12,14 +12,12 @@ use Illuminate\Http\Request;
 use Validator;
 use Yajra\Datatables\Datatables;
 
-// use Validator;
-
 class CoaCodeController extends Controller {
 
 	public function __construct() {
 	}
 
-	public function CoaCodeFilter(Request $request) {
+	public function CoaCodeFilter() {
 		$this->data['extras'] = [
 			'currency_code_list' => collect(Config::where('config_type_id', 85)->select('name', 'id')->get())->prepend(['name' => 'Select Currency Code', 'id' => '']),
 			'debit_card_proposal_list' => collect(Config::where('config_type_id', 86)->select('name', 'id')->get())->prepend(['name' => 'Select Proposal Type', 'id' => '']),
