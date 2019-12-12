@@ -104,7 +104,7 @@ class CoaTypeController extends Controller {
 					'code.unique' => 'COA Code is already taken',
 				];
 
-				foreach ($request->coa_codes as $coa_code) {
+				foreach ($request->coa_codes as $coa_code_key => $coa_code) {
 					$validator_1 = Validator::make($coa_code, [
 						'code' => [
 							'unique:coa_codes,code,' . $coa_code['id'] . ',id,company_id,' . Auth::user()->company_id,
@@ -114,6 +114,15 @@ class CoaTypeController extends Controller {
 
 					if ($validator_1->fails()) {
 						return response()->json(['success' => false, 'errors' => $validator_1->errors()->all()]);
+					}
+
+					//FIND DUPLICATE COA CODES
+					foreach ($request->coa_codes as $search_key => $search_array) {
+						if ($search_array['code'] == $coa_code['code']) {
+							if ($search_key != $coa_code_key) {
+								return response()->json(['success' => false, 'errors' => ['COA Code name already taken']]);
+							}
+						}
 					}
 				}
 			}

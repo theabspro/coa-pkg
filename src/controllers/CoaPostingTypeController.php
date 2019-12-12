@@ -71,7 +71,7 @@ class CoaPostingTypeController extends Controller {
 					'name.unique' => 'COA Posting Type name is already taken',
 				];
 
-				foreach ($request->coa_posting_types as $coa_posting_type) {
+				foreach ($request->coa_posting_types as $coa_posting_type_key => $coa_posting_type) {
 					$validator = Validator::make($coa_posting_type, [
 						'name' => [
 							'unique:coa_posting_types,name,' . $coa_posting_type['id'] . ',id,company_id,' . Auth::user()->company_id,
@@ -81,6 +81,15 @@ class CoaPostingTypeController extends Controller {
 
 					if ($validator->fails()) {
 						return response()->json(['success' => false, 'errors' => $validator->errors()->all()]);
+					}
+
+					//FIND DUPLICATE COA POSTING TYPES
+					foreach ($request->coa_posting_types as $search_key => $search_array) {
+						if ($search_array['name'] == $coa_posting_type['name']) {
+							if ($search_key != $coa_posting_type_key) {
+								return response()->json(['success' => false, 'errors' => ['COA Posting type name already taken']]);
+							}
+						}
 					}
 				}
 				//}
