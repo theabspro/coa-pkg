@@ -4,6 +4,7 @@ namespace Abs\CoaPkg;
 
 use App\Company;
 use App\Config;
+use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -107,6 +108,23 @@ class CoaCode extends Model {
 		$record->created_by_id = $admin->id;
 		$record->save();
 		return $record;
+	}
+
+	public static function searchCoaCode($r) {
+		$key = $r->key;
+		$list = self::where('company_id', Auth::user()->company_id)
+			->select(
+				'id',
+				'name',
+				'code'
+			)
+			->where(function ($q) use ($key) {
+				$q->where('name', 'like', '%' . $key . '%')
+					->orWhere('code', 'like', '%' . $key . '%')
+				;
+			})
+			->get();
+		return response()->json($list);
 	}
 
 }
