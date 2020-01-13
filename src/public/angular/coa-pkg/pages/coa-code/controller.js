@@ -1,3 +1,49 @@
+app.config(['$routeProvider', function($routeProvider) {
+
+    $routeProvider.
+    //COA CODE
+    when('/coa-pkg/coa-code/list', {
+        template: '<coa-code-list></coa-code-list>',
+        title: 'COA Codes',
+    }).
+    when('/coa-pkg/coa-code/add', {
+        template: '<coa-code-form></coa-code-form>',
+        title: 'Add COA Code',
+    }).
+    when('/coa-pkg/coa-code/edit/:id', {
+        template: '<coa-code-form></coa-code-form>',
+        title: 'Edit COA Code',
+    }).
+
+    //COA TYPE
+    when('/coa-pkg/coa-type/list', {
+        template: '<coa-type-list></coa-type-list>',
+        title: 'COA Types',
+    }).
+    when('/coa-pkg/coa-type/add', {
+        template: '<coa-type-form></coa-type-form>',
+        title: 'Add COA Type',
+    }).
+    when('/coa-pkg/coa-type/edit/:id', {
+        template: '<coa-type-form></coa-type-form>',
+        title: 'Edit COA Type',
+    }).
+
+    //COA POSTING TYPE
+    when('/coa-pkg/coa-posting-type/list', {
+        template: '<coa-posting-type-list></coa-posting-type-list>',
+        title: 'COA Posting Types',
+    }).
+    when('/coa-pkg/coa-posting-type/add', {
+        template: '<coa-posting-type-form></coa-posting-type-form>',
+        title: 'Add COA Posting Type',
+    }).
+    when('/coa-pkg/coa-posting-type/edit/:id', {
+        template: '<coa-posting-type-form></coa-posting-type-form>',
+        title: 'Edit COA Posting Type',
+    });
+}]);
+
 app.component('coaCodeList', {
     templateUrl: coa_code_list_template_url,
     controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $element) {
@@ -10,11 +56,11 @@ app.component('coaCodeList', {
             self.status_filter = response.data.status_filter;
             $rootScope.loading = false;
         });
-        
-        $scope.getCookie = function (name) {
-          var value = "; " + document.cookie;
-          var parts = value.split("; " + name + "=");
-          if (parts.length == 2) return parts.pop().split(";").shift();
+
+        $scope.getCookie = function(name) {
+            var value = "; " + document.cookie;
+            var parts = value.split("; " + name + "=");
+            if (parts.length == 2) return parts.pop().split(";").shift();
         }
         var search_coa_code_cookie = $scope.getCookie('search_coa_code');
         $('#search_coa_code').val(search_coa_code_cookie);
@@ -76,9 +122,9 @@ app.component('coaCodeList', {
         $("#search_coa_code").keyup(function() { //alert(this.value);
             var filter_coa = this.value;
             dataTable.fnFilter(filter_coa);
-            document.cookie = "search_coa_code="+filter_coa;
+            document.cookie = "search_coa_code=" + filter_coa;
         });
-        
+
         $(".search_clear").on("click", function() {
             $('#search_coa_code').val('');
             document.cookie = "search_name=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
@@ -131,7 +177,7 @@ app.component('coaCodeList', {
                 coa_code_delete_url + '/' + id,
             ).then(function(response) {
                 if (response.data.success) {
-                    $noty =new Noty({
+                    $noty = new Noty({
                         type: 'success',
                         layout: 'topRight',
                         text: 'Coa Code Deleted Successfully',
@@ -159,7 +205,7 @@ app.component('coaCodeForm', {
         $http.get(
             get_form_data_url
         ).then(function(response) {
-//console.log(response.data);
+            //console.log(response.data);
             self.coa_code = response.data.coa_code;
             self.extras = response.data.extras;
             self.action = response.data.action;
@@ -180,89 +226,89 @@ app.component('coaCodeForm', {
         });
 
         // $('#submit').click(function() {
-            var form_id = '#form';
-            var v = jQuery(form_id).validate({
-                ignore: "",
-                rules: {
-                    'code': {
-                        required: true,
-                        minlength: 3,
-                        maxlength: 191,
-                    },
-                    'name': {
-                        required: true,
-                        minlength: 3,
-                        maxlength: 191,
-                    },
-                    'type_id': {
-                        required: true,
-                    },
-                    'posting_type_id': {
-                        required: true,
-                    },
+        var form_id = '#form';
+        var v = jQuery(form_id).validate({
+            ignore: "",
+            rules: {
+                'code': {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 191,
                 },
-                submitHandler: function(form) {
-                    let formData = new FormData($(form_id)[0]);
-                    $('#submit').button('loading');
-                    $.ajax({
-                            url: laravel_routes['saveCoaCode'],
-                            method: "POST",
-                            data: formData,
-                            processData: false,
-                            contentType: false,
-                        })
-                        .done(function(res) {
-                            // console.log(res.success);
-                            if (!res.success) {
-                                // $('#submit').button('reset');
-                                $('#submit').prop('disabled', 'disabled');
-                                var errors = '';
-                                for (var i in res.errors) {
-                                    errors += '<li>' + res.errors[i] + '</li>';
-                                }
-                                $noty =new Noty({
-                                    type: 'error',
-                                    layout: 'topRight',
-                                    text: errors
-                                }).show();
-                                setTimeout(function() {
-                                    $noty.close();
-                                }, 3000);
-                                // custom_noty('error', errors);
-                                $('#submit').button('reset');
-
-                            } else {
-                                if(res.comes_from != '') {
-                                    $noty =new Noty({
-                                    type: 'success',
-                                    layout: 'topRight',
-                                    text: 'Coa Code ' + res.comes_from + ' Successfully',
-                                }).show();
-                                }
-                                setTimeout(function() {
-                                    $noty.close();
-                                }, 3000);
-                                // custom_noty('success', 'Coa Type ' + res.comes_from + ' Successfully');
-                                $('#submit').button('reset');
-
-                                $location.path('/coa-pkg/coa-code/list')
-                                $scope.$apply()
+                'name': {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 191,
+                },
+                'type_id': {
+                    required: true,
+                },
+                'posting_type_id': {
+                    required: true,
+                },
+            },
+            submitHandler: function(form) {
+                let formData = new FormData($(form_id)[0]);
+                $('#submit').button('loading');
+                $.ajax({
+                        url: laravel_routes['saveCoaCode'],
+                        method: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                    })
+                    .done(function(res) {
+                        // console.log(res.success);
+                        if (!res.success) {
+                            // $('#submit').button('reset');
+                            $('#submit').prop('disabled', 'disabled');
+                            var errors = '';
+                            for (var i in res.errors) {
+                                errors += '<li>' + res.errors[i] + '</li>';
                             }
-                        })
-                        .fail(function(xhr) {
-                            $('#submit').button('reset');
-                            $noty =new Noty({
+                            $noty = new Noty({
                                 type: 'error',
                                 layout: 'topRight',
-                                text: 'Something went wrong at server',
+                                text: errors
                             }).show();
                             setTimeout(function() {
                                 $noty.close();
                             }, 3000);
-                            // custom_noty('error', 'Something went wrong at server');
-                        });
-                },
-            });
+                            // custom_noty('error', errors);
+                            $('#submit').button('reset');
+
+                        } else {
+                            if (res.comes_from != '') {
+                                $noty = new Noty({
+                                    type: 'success',
+                                    layout: 'topRight',
+                                    text: 'Coa Code ' + res.comes_from + ' Successfully',
+                                }).show();
+                            }
+                            setTimeout(function() {
+                                $noty.close();
+                            }, 3000);
+                            // custom_noty('success', 'Coa Type ' + res.comes_from + ' Successfully');
+                            $('#submit').button('reset');
+
+                            $location.path('/coa-pkg/coa-code/list')
+                            $scope.$apply()
+                        }
+                    })
+                    .fail(function(xhr) {
+                        $('#submit').button('reset');
+                        $noty = new Noty({
+                            type: 'error',
+                            layout: 'topRight',
+                            text: 'Something went wrong at server',
+                        }).show();
+                        setTimeout(function() {
+                            $noty.close();
+                        }, 3000);
+                        // custom_noty('error', 'Something went wrong at server');
+                    });
+            },
+        });
         //});
     }
 });
