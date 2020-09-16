@@ -1,0 +1,97 @@
+<!-- Content Wrap -->
+<div class="content-wrap">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-header-inner">
+            <div class="page-header-content-left">
+                <div class="page-header-content button-block">
+                    <a href="#!/coa-pkg/coa-posting-type/list" type="button" class="btn-back btn-img" ng-shortcut="'meta+shift+left'" ng-shortcut-click><img class="img-responsive" src="./public/theme/img/content/previous.svg" alt="Back" /></a>
+                </div><!-- Page Header Content -->
+                <div class="page-header-content title-block">
+                    <h1 class="title"><b>{{$ctrl.title}}</b></h1>
+                    <p class="subtitle">Coa Posting Type List / {{$ctrl.action}}</p>
+                </div><!-- Page Header Content -->
+            </div><!-- Page Header Content Left -->
+        </div><!-- Page Header Inner -->
+    </div><!-- Page Header -->
+
+    <!-- Page Main Content -->
+    <div class="page-main-content form-content type2" style="padding: 0;">
+        <form id="form" enctype="multipart-formdata" autocomplete="off">
+            <!-- <input type="hidden" name="id" ng-modal="$ctrl.coa_posting_type.id" value="{{$ctrl.coa_posting_type.id}}"> -->
+            <div class="page-tab-form pb-70">
+                <div class="tab-form-wrap">
+                    <div class="tab-form-header">
+                        <div class="tab-header">
+                                <!-- Filters -->
+                            <div class="isotope-filters animated" data-animation="fadeInLeft" data-animation-delay="300">
+                                <ul class="nav nav-pills cndn-tabs">
+                                    <li class="active"><a class="filter active" data-target="#category-information" data-toggle="tab" aria-expanded="true">COA Posting Type</a></li>
+                                </ul>
+                            </div> 
+                        </div><!-- Tab Header -->
+                    </div><!-- Tab Form Header -->
+                    <div class="tab-form-body">
+                        <div class="tab-content">
+                            <!-- TAB PANEL -->
+                            <div class="tab-pane fade in active" id="category-information" data-animation="fadeInUp" data-animation-delay="300">
+                                <div class="tab-pane-wrap">
+                                    <div class="row">
+                                        <div class="table-responsive">
+                                                <table class="table table-form">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="width-230">COA Posting Type<sup class="mandatory">*</sup></th>
+                                                            <th class="width-230">Active Status<sup class="mandatory">*</sup></th>
+                                                            <th class="width-60"></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="coa_posting_type_list" ng-repeat="(index, coa_posting_type) in $ctrl.coa_posting_types">
+                                                        <input type="hidden" name="coa_posting_types[{{index}}][id]" value="{{coa_posting_type.id}}">
+                                                        <tr>
+                                                            <td>
+                                                                <input type="text" name="coa_posting_types[{{index}}][name]" ng-model="coa_posting_type.name" class="form-control coa_posting_type_name" placeholder="Enter COA Posting Type" autocomplete="off" minlength="3" maxlength="191" required="required"/>
+                                                            </td>
+                                                            <td>
+                                                                <div class="tab-switch">
+                                                                    <md-switch ng-model="coa_posting_type.switch_value" aria-label="Switch 1" ng-true-value="'Inactive'" ng-false-value="'Active'" class="md-warn">
+                                                                        {{ coa_posting_type.switch_value }}
+                                                                    </md-switch>
+                                                                    <input type="hidden" name="coa_posting_types[{{index}}][status]" value="{{coa_posting_type.switch_value}}">
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <button class="btn-delete" ng-click="$ctrl.removeCoaPostingType(index, coa_posting_type.id)" type="button">
+                                                                    <img class="img-responsive" src="./public/theme/img/table/cndn/delete.svg" alt="Delete" />
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <td colspan="3">
+                                                                <button type="button" class="btn btn-primary-light btn-square" ng-click="$ctrl.addNewCoaPostingType()">+ Add COA Posting Type</button>
+                                                            </td>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div><!-- Table Responsive -->
+                                        </div><!-- Column -->
+                                        <div class="tab-pane-footer">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <button type="submit" id="submit" class="btn btn-primary" ng-shortcut="'meta+shift+s'" ng-shortcut-click>Submit</button>
+                                                </div>
+                                            </div>
+                                        </div><!-- Tab Footer -->
+                                        <input type="hidden" name="coa_posting_type_removal_ids" id="coa_posting_type_removal_ids" value="">
+                                    </div><!-- Row -->
+                                </div><!-- Tab Pane Wrap -->
+                            </div><!-- Tabe Pane -->
+                        </div><!-- Tab Content -->   
+                    </div><!-- Tab Form Body -->
+                </div><!-- Tab Form Wrap -->
+            </div><!-- Page Form -->
+        </form>
+    </div><!-- Page Main Content -->
+</div><!-- Content Wrap -->

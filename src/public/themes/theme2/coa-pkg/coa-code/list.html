@@ -1,0 +1,176 @@
+<div class="content-wrap cndn-wrap">
+    <div class="page-header">
+        <div class="page-header-inner">
+            <div class="page-header-content-left">
+                <div class="page-header-content title-block">
+                    <h1 class="title type-2">COA Codes List</h1>
+                </div><!-- Page Header Content -->
+                <div class="page-header-content button-block">
+                    <button class="btn btn-bordered" data-toggle="modal" data-target="#filter" ng-shortcut="'meta+shift+f'" ng-shortcut-click><i class="icon ion-md-funnel"></i>Filter</button>
+                </div>
+            </div><!-- Page Header Content Left -->
+            <div class="page-header-content-right">
+                <div class="page-header-content indicator-block">
+                    <ul class="indicator-list">
+                        <li class="green">Active</li>
+                        <li class="red">In Active</li>
+                    </ul>
+                </div><!-- Page Header Content -->
+                <div class="page-header-content search-block">
+                    <div class="search_filter">
+                        <label>
+                            <input type="search" id="search_coa_code" class="form-control" placeholder="Search" />
+                            <button class="btn-clear search_clear">Clear</button>
+                        </label>
+                    </div><!-- Search Filter -->
+                </div><!-- Page Header Content -->
+                <div class="page-header-content button-block">
+                    <a href="#!/coa-pkg/coa-code/add" class="btn btn-primary" ng-shortcut="'meta+shift+n'" ng-shortcut-click>Add New</a>
+                </div><!-- Page Header Content -->
+            </div><!-- Page Header Content Right -->
+        </div><!-- Page Header Inner -->
+    </div><!-- Page Header -->
+    <div class="page-main-content list-page-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table" id="coa-code-table" style="width: 100% !important;">
+                        <thead>
+                            <tr>
+                                <th class="action">Action</th>
+                                <th>COA Code</th>
+                                <th>Description</th>
+                                <th>Type</th>
+                                <th>Posting Type</th>
+                                <th>Currency Code</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div><!-- Content Wrap -->
+
+<div class="modal fade filter" id="filter" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close ripple" data-dismiss="modal" aria-label="Close"><i class="icon ion-md-close"></i></button>
+                <h5 class="modal-title" id="myModalLabel">Filter</h5>
+            </div><!-- Modal Header -->
+            <div class="modal-body">
+                <div class="modal-form mb-30">
+                    <div class="row modal-row">
+                        <div class="col-sm-6">
+                            <div class="input-text form-group">
+                                <div class="form-group">
+                                    <label>Coa Code</label>
+                                    <input type="text" class="form-control" name="coa_code" value="" id="coa_code" placeholder="Enter COA Code" autocomplete="off"/>
+                                </div>
+                            </div><!-- Field -->
+                        </div><!-- Column -->
+                        <div class="col-sm-6">
+                            <div class="input-text form-group">
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    <input type="text" class="form-control" name="description" value="" id="description" placeholder="Enter Description" autocomplete="off"/>
+                                </div>
+                            </div><!-- Field -->
+                        </div><!-- Column -->
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Type</label>
+                                <ui-select ng-model="$ctrl.type_id" theme="select2" ng-change="onSelectedType($ctrl.type_id)">
+                                    <ui-select-match placeholder="Select Type">
+                                        {{$select.selected.name || $select.selected}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="i.id as i in $ctrl.extras.type_list | propsFilter: {name: $select.search}">
+                                        <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <input type="hidden" name="coa_type" id="coa_type" value="">
+                            </div>
+                        </div><!-- Column -->
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Posting type</label>
+                                <ui-select ng-model="$ctrl.posting_type_id" theme="select2" ng-change="onSelectedPostingType($ctrl.posting_type_id)">
+                                    <ui-select-match placeholder="Select Posting type">
+                                        {{$select.selected.name || $select.selected}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="i.id as i in $ctrl.extras.posting_type_list | propsFilter: {name: $select.search}">
+                                        <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <input type="hidden" name="posting_type" id="posting_type" value="">
+                            </div>
+                        </div><!-- Column -->
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Currency Code</label>
+                                <ui-select ng-model="$ctrl.currency_code_id" ng-change="onSelectedCurrencyCode($ctrl.currency_code_id)">
+                                    <ui-select-match placeholder="Select Currency Code">
+                                        {{$select.selected.name || $select.selected}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="i.id as i in $ctrl.extras.currency_code_list | propsFilter: {name: $select.search}">
+                                        <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <input type="hidden" name="currency_code" id="currency_code" value="">
+                            </div>
+                        </div><!-- Column -->
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Proposal Type</label>
+                                <ui-select ng-model="$ctrl.debit_credit_proposal_id" ng-change="onSelectedProposalType($ctrl.debit_credit_proposal_id)">
+                                    <ui-select-match placeholder="Select Proposal Type">
+                                        {{$select.selected.name || $select.selected}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="i.id as i in $ctrl.extras.debit_card_proposal_list | propsFilter: {name: $select.search}">
+                                        <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <input type="hidden" name="proposal_type" id="proposal_type" value="">
+                            </div>
+                        </div><!-- Column -->
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Status</label>
+                                <ui-select ng-model="$ctrl.status_id" ng-change="onSelectedStatus($ctrl.status_id)">
+                                    <ui-select-match placeholder="Select Status">
+                                        {{$select.selected.name || $select.selected}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="i.id as i in $ctrl.status_filter | propsFilter: {name: $select.search}">
+                                        <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <input type="hidden" name="status" id="status" value="">
+                            </div>
+                        </div><!-- Column -->
+                    </div><!-- Row -->
+                </div><!-- Modal Form -->
+            </div><!-- Modal Body -->
+        </div><!-- Modal Content -->
+    </div><!-- Modal Dialog -->
+</div><!-- Modal Content -->
+
+<!-- Modal -->
+<div class="modal fade alert-modal failure" id="coa-code-delete-modal" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">ARE YOU SURE?</h4>   
+            </div>
+            <div class="modal-body">
+                <h5>Delete</h5>
+                <p>You can’t retrive the data again, Are you sure you want to delete? </p>
+                <input type="hidden" name="coa_code_id" id="coa_code_id" value="">
+                <button class="btn btn-grey" data-dismiss="modal" aria-label="Close">Cancel</button>
+                <button class="btn btn-rose" id="delete_coa_code_confirm_modal" ng-click="deleteCoaCodeConfirm()" type="button" data-dismiss="modal" aria-label="Close">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
